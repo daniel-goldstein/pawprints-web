@@ -30,3 +30,32 @@
     transform: rotate(360deg);
   }
 }
+
+.dashboard-container {
+  display: flex;
+  flex-direction: row; /* Already the default */
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+.dashboard-left {
+}
+
+.dashboard-center {
+}
+
+.dashboard-right {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import {GoogleApiWrapper, Map, Marker, InfoWindow} from 'google-maps-react';
 
+import ClueUploadForm from './ClueUploadForm';
+import './App.css';
+
 import { cluesRef } from "./fire";
 import ClueInfo from './ClueInfo';
 import { GOOGLE_MAPS_API_KEY } from "./properties";
@@ -10,7 +13,7 @@ const BOSTON = {
   lng: -71.0589
 };
 
-class MapContainer extends Component {
+class Dashboard extends Component {
 
   constructor(props) {
     super(props);
@@ -19,11 +22,12 @@ class MapContainer extends Component {
       clues: [],
       selectedClue: null,
       activeMarker: null,
-      showingInfoWindow: false
+      showingInfoWindow: false,
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    //Listen for ANY updates to clues and sync with clues state
     cluesRef.on('value', snapshot => {
       let clues = [];
       snapshot.forEach(item => {
@@ -36,31 +40,43 @@ class MapContainer extends Component {
 
   render() {
     return (
-      <Map google={this.props.google}
-           zoom={14}
-           onClick={this.onMapClicked}
-           initialCenter={BOSTON}>
+      <div className="dashboard-container" id="container">
 
-        {this.renderClues()}
+        <div className="dashboard-left" id="clue-upload-form">
+          <ClueUploadForm google={this.props.google}/>
+        </div>
 
-        <InfoWindow
-          marker={this.state.activeMarker}
-          visible={this.state.showingInfoWindow}>
-          <ClueInfo clue={this.state.selectedClue}/>
-        </InfoWindow>
-      </Map>
+        <div className="dashboard-center" id="map">
+          <Map google={this.props.google}
+               zoom={14}
+               onClick={this.onMapClicked}
+               initialCenter={BOSTON}>
+
+            {this.renderClues()}
+
+            <InfoWindow
+              marker={this.state.activeMarker}
+              visible={this.state.showingInfoWindow}>
+              <ClueInfo clue={this.state.selectedClue}/>
+            </InfoWindow>
+          </Map>
+        </div>
+      </div>
     );
   }
 
+  // Allow clicking away from a marker
   onMapClicked = () => {
     if (this.state.showingInfoWindow) {
       this.setState({
         showingInfoWindow: false,
-        activeMarker: null
+        activeMarker: null,
+        selectedClue: null
       })
     }
   };
 
+  // Render all the clue markers
   renderClues() {
     return this.state.clues.map((clue, index) => {
       const coords = { lat: clue.latitude, lng: clue.longitude };
@@ -70,12 +86,13 @@ class MapContainer extends Component {
           key={index}
           position={coords}
           title={clue.title}
-          onClick={(props, marker) => this.onMarkerClick(clue, marker)}
+          onClick={(_, marker) => this.onMarkerClick(clue, marker)}
         />
       );
     });
   }
 
+  // Select the given clue/marker to populate the info window
   onMarkerClick = (clue, marker) => {
     this.setState({
       selectedClue: clue,
@@ -87,4 +104,4 @@ class MapContainer extends Component {
 
 export default GoogleApiWrapper({
   apiKey: (GOOGLE_MAPS_API_KEY)
-})(MapContainer)
+})(Dashboard)

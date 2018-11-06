@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import MapContainer from './MapContainer'
+import Dashboard from './Dashboard';
 
 class App extends Component {
   render() {
     return (
-      <MapContainer />
+      <Dashboard />
     );
   }
 }
