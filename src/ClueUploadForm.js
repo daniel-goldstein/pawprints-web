@@ -1,21 +1,39 @@
 import React from 'react';
-//import {cluesRef} from "./fire";
+import ReactDOM from 'react-dom';
+import {cluesRef} from "./fire";
+
+const initialState = {
+  clueNumber: 0,
+  title: "",
+  location: null
+};
 
 export default class ClueUploadForm extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      clueNumber: 0,
-      title: "",
-    }
+    this.state = initialState;
+  }
+
+  componentDidMount() {
+    // Connect google search API to the search box
+    let searchBoxInput = ReactDOM.findDOMNode(this.refs.searchBox);
+    this.searchBox = new this.props.google.maps.places.SearchBox(searchBoxInput);
+    this.searchBox.addListener('places_changed', this.onPlacesChanged);
   }
 
   handleChange = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
+    let name = event.target.name;
+    let value = event.target.value;
 
-    this.setState({[name]: value});
+    this.setState({ [name] : value });
+  };
+
+  onPlacesChanged = () => {
+    let places = this.searchBox.getPlaces();
+    let loc = places[0].geometry.location; // Grab the location of the first search result
+    let latLng = {lat: loc.lat(), lng: loc.lng()};
+    this.setState({location: latLng});
   };
 
   render() {
@@ -25,14 +43,24 @@ export default class ClueUploadForm extends React.Component {
         <form onSubmit={this.handleSubmit}>
           <label>
             Clue Number:
-            <input type="number" value={this.state.clueNumber} onChange={this.handleChange}/>
+            <br />
+            <input type="number"
+                   value={this.state.clueNumber}
+                   name="clueNumber"
+                   onChange={this.handleChange}/>
           </label>
           <br />
 
           <label>
             Title:
-            <input type="text" value={this.state.title} onChange={this.handleChange}/>
+            <br />
+            <input type="text" value={this.state.title}
+                   name="title"
+                   onChange={this.handleChange}/>
           </label>
+          <br />
+
+          <input type="text" ref="searchBox" />
           <br />
 
           <input type="submit" value="submit" />
@@ -43,18 +71,29 @@ export default class ClueUploadForm extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    e.stopPropagation();
 
-    // let clue = {
-    //   clueNumber: this.state.clueNumber,
-    //   title: this.state.title,
-    //   latitude: this.props.loc.lat,
-    //   longitude: this.props.loc.lng,
-    //   completed: false
-    // };
-    alert("Hi!!");
+    let clueNumber = this.state.clueNumber;
+    let title = this.state.title;
+    let location = this.state.location;
 
+    if (!clueNumber || !title || !location) {
+      alert("Please fill out all fields!");
+      return;
+    }
 
-    // cluesRef.push(clue);
+    let clue = {
+      clueNumber: parseInt(clueNumber),
+      title: title,
+      latitude: location.lat,
+      longitude: location.lng,
+      completed: false
+    };
+    cluesRef.push(clue);
+
+    this.setState(initialState);
+  };
+
+  componentWillUnmount() {
+    this.searchBox.removeListener('places_changed', this.onPlacesChanged);
   }
 }
