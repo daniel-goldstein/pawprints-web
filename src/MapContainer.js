@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import {GoogleApiWrapper, Map, Marker, InfoWindow} from 'google-maps-react';
+
+import ClueUploadForm from './ClueUploadForm';
+import './App.css';
 
 import { cluesRef } from "./fire";
 import ClueInfo from './ClueInfo';
@@ -19,11 +23,12 @@ class MapContainer extends Component {
       clues: [],
       selectedClue: null,
       activeMarker: null,
-      showingInfoWindow: false
+      showingInfoWindow: false,
+      searchedLocation: null
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     cluesRef.on('value', snapshot => {
       let clues = [];
       snapshot.forEach(item => {
@@ -32,31 +37,76 @@ class MapContainer extends Component {
 
       this.setState({ clues })
     });
+
+    let searchBoxInput = ReactDOM.findDOMNode(this.refs.input);
+    this.searchBox = new this.props.google.maps.places.SearchBox(searchBoxInput);
+    this.searchBox.addListener('places_changed', this.onPlacesChanged);
   }
+
+  onPlacesChanged = () => {
+    let places = this.searchBox.getPlaces();
+    let loc = places[0].geometry.location;
+    let latLng = {lat: loc.lat(), lng: loc.lng()};
+    this.setState({searchedLocation: latLng});
+  };
 
   render() {
     return (
-      <Map google={this.props.google}
-           zoom={14}
-           onClick={this.onMapClicked}
-           initialCenter={BOSTON}>
+      <div>
+        <input ref="input" type="text" />
+        <Map google={this.props.google}
+             zoom={14}
+             onClick={this.onMapClicked}
+             initialCenter={BOSTON}>
 
-        {this.renderClues()}
+          {this.renderClues()}
 
-        <InfoWindow
-          marker={this.state.activeMarker}
-          visible={this.state.showingInfoWindow}>
-          <ClueInfo clue={this.state.selectedClue}/>
-        </InfoWindow>
-      </Map>
+          {this.state.searchedLocation === null ? undefined :
+            <Marker
+              key={0}
+              position={this.state.searchedLocation}
+              title={"No title"}
+              onClick={(_, marker) => this.setSearchAsActiveMarker(marker)}
+            />
+          }
+
+          <InfoWindow
+            marker={this.state.activeMarker}
+            visible={this.state.showingInfoWindow}>
+            {this.renderInfoWindowContent()}
+          </InfoWindow>
+        </Map>
+      </div>
     );
   }
+
+  renderInfoWindowContent() {
+    if (this.state.activeMarker) {
+      if (this.state.selectedClue) {
+        return <ClueInfo clue={this.state.selectedClue}/>;
+      }
+      // Render form to add active marker as a clue
+      return <ClueUploadForm loc={this.state.searchedLocation} />
+    }
+
+    // Child component required for InfoWindow even though it'll be hidden
+    return <div>...</div>;
+  }
+
+  setSearchAsActiveMarker= (marker) => {
+    this.setState({
+      activeMarker: marker,
+      showingInfoWindow: true,
+      selectedClue: null
+    });
+  };
 
   onMapClicked = () => {
     if (this.state.showingInfoWindow) {
       this.setState({
         showingInfoWindow: false,
-        activeMarker: null
+        activeMarker: null,
+        selectedClue: null
       })
     }
   };
@@ -70,7 +120,7 @@ class MapContainer extends Component {
           key={index}
           position={coords}
           title={clue.title}
-          onClick={(props, marker) => this.onMarkerClick(clue, marker)}
+          onClick={(_, marker) => this.onMarkerClick(clue, marker)}
         />
       );
     });
@@ -83,6 +133,10 @@ class MapContainer extends Component {
       showingInfoWindow: true
     });
   };
+
+  componentWillUnmount() {
+    this.searchBox.removeListener('places_changed', this.onPlacesChanged);
+  }
 }
 
 export default GoogleApiWrapper({

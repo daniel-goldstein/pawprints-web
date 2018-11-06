@@ -5,7 +5,6 @@ export default class ClueInfo extends React.Component {
     if (!this.props.clue) {
       return <div/>;
     }
-    console.log(this.props.clue);
 
     let status = this.props.clue.completed ? "Completed" : "Uncompleted";
 
