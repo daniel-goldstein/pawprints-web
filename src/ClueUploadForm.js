@@ -38,28 +38,26 @@ export default class ClueUploadForm extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{marginLeft: '5%'}}>
         <h2>Drop a clue!</h2>
         <form onSubmit={this.handleSubmit}>
-          <label>
-            Clue Number:
-            <br />
-            <input type="number"
-                   value={this.state.clueNumber}
-                   name="clueNumber"
-                   onChange={this.handleChange}/>
-          </label>
+
+          <label>Clue Number</label>
+          <input type="number"
+                 value={this.state.clueNumber}
+                 name="clueNumber"
+                 onChange={this.handleChange}/>
           <br />
 
-          <label>
-            Title:
-            <br />
-            <input type="text" value={this.state.title}
-                   name="title"
-                   onChange={this.handleChange}/>
-          </label>
+          <label>Title</label>
+          <br />
+          <input type="text" value={this.state.title}
+                 name="title"
+                 onChange={this.handleChange}/>
+
           <br />
 
+          <label>Location</label>
           <input type="text" ref="searchBox" />
           <br />
 
