@@ -26,3 +26,10 @@ yarn-error.log*
 
 # Properties
 src/properties.js
+
+# Firebase
+.firebase
+.firebaserc
+database.rules.json
+firebase.json
+storage.rules
