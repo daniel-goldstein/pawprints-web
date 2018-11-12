@@ -44,7 +44,7 @@ export default class ClueUploadForm extends React.Component {
         <h2>Drop a clue!</h2>
         <form onSubmit={this.handleSubmit}>
 
-          <FormGroup>
+          <FormGroup bsSize="large">
             <ControlLabel>Clue Number</ControlLabel>
             <FormControl
               type="number"
@@ -54,7 +54,7 @@ export default class ClueUploadForm extends React.Component {
             />
           </FormGroup>
 
-          <FormGroup>
+          <FormGroup bsSize="large">
             <ControlLabel>Title</ControlLabel>
             <FormControl
               type="text"
@@ -65,8 +65,8 @@ export default class ClueUploadForm extends React.Component {
           </FormGroup>
 
 
-          <FormGroup>
-            <ControlLabel>Title</ControlLabel>
+          <FormGroup bsSize="large">
+            <ControlLabel>Location</ControlLabel>
             <FormControl type="text" ref="searchBox"/>
           </FormGroup>
 
