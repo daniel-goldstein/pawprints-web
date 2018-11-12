@@ -19,7 +19,7 @@ export default class ClueUploadForm extends React.Component {
     // Connect google search API to the search box
     let searchBoxInput = ReactDOM.findDOMNode(this.refs.searchBox);
     this.searchBox = new this.props.google.maps.places.SearchBox(searchBoxInput);
-    this.searchBox.addListener('places_changed', this.onPlacesChanged);
+    this.searchBoxListener = this.searchBox.addListener('places_changed', this.onPlacesChanged);
   }
 
   handleChange = (event) => {
@@ -38,7 +38,7 @@ export default class ClueUploadForm extends React.Component {
 
   render() {
     return (
-      <div style={{marginLeft: '5%'}}>
+      <div className="dashboard-form">
         <h2>Drop a clue!</h2>
         <form onSubmit={this.handleSubmit}>
 
@@ -92,6 +92,6 @@ export default class ClueUploadForm extends React.Component {
   };
 
   componentWillUnmount() {
-    this.searchBox.removeListener('places_changed', this.onPlacesChanged);
+    this.searchBox.removeListener(this.searchBoxListener);
   }
 }

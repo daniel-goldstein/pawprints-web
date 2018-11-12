@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {GoogleApiWrapper, Map, Marker, InfoWindow} from 'google-maps-react';
 
+import { ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
+
 import ClueUploadForm from './ClueUploadForm';
 import './App.css';
 
@@ -13,6 +15,12 @@ const BOSTON = {
   lng: -71.0589
 };
 
+const CLUE_VISIBILITY = {
+  ALL: "All",
+  COMPLETED: "Completed",
+  UNCOMPLETED: "Uncompleted"
+};
+
 class Dashboard extends Component {
 
   constructor(props) {
@@ -23,6 +31,7 @@ class Dashboard extends Component {
       selectedClue: null,
       activeMarker: null,
       showingInfoWindow: false,
+      clueVisibility: CLUE_VISIBILITY.ALL
     }
   }
 
@@ -49,24 +58,42 @@ class Dashboard extends Component {
         <div className="dashboard-center" id="map">
           <Map google={this.props.google}
                zoom={14}
-               onClick={this.onMapClicked}
+               onClick={this.removeSelectedClueAndInfoWindow}
                initialCenter={BOSTON}>
 
             {this.renderClues()}
 
             <InfoWindow
+              onClose={this.removeSelectedClueAndInfoWindow}
               marker={this.state.activeMarker}
               visible={this.state.showingInfoWindow}>
               <ClueInfo clue={this.state.selectedClue}/>
             </InfoWindow>
           </Map>
         </div>
+
+        <div className="bottom-right-absolute">
+          <ToggleButtonGroup type="radio"
+                             name="clue-visibility-radio"
+                             onChange={(value) => this.setState({clueVisibility: value})}
+                             defaultValue={this.state.clueVisibility}>
+
+            <ToggleButton value={CLUE_VISIBILITY.ALL}>
+              {CLUE_VISIBILITY.ALL}
+            </ToggleButton>
+            <ToggleButton value={CLUE_VISIBILITY.COMPLETED}>
+              {CLUE_VISIBILITY.COMPLETED}
+            </ToggleButton>
+            <ToggleButton value={CLUE_VISIBILITY.UNCOMPLETED}>
+              {CLUE_VISIBILITY.UNCOMPLETED}
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
       </div>
     );
   }
 
-  // Allow clicking away from a marker
-  onMapClicked = () => {
+  removeSelectedClueAndInfoWindow = () => {
     if (this.state.showingInfoWindow) {
       this.setState({
         showingInfoWindow: false,
@@ -78,7 +105,9 @@ class Dashboard extends Component {
 
   // Render all the clue markers
   renderClues() {
-    return this.state.clues.map((clue, index) => {
+    let cluesToShow = this.filterClues(this.state.clueVisibility);
+
+    return cluesToShow.map((clue, index) => {
       const coords = { lat: clue.latitude, lng: clue.longitude };
 
       return (
@@ -90,6 +119,21 @@ class Dashboard extends Component {
         />
       );
     });
+  }
+
+  filterClues(clueVisibility) {
+    const allClues = this.state.clues;
+
+    switch (clueVisibility) {
+      case CLUE_VISIBILITY.ALL:
+        return allClues;
+      case CLUE_VISIBILITY.COMPLETED:
+        return allClues.filter(clue => clue.completed);
+      case CLUE_VISIBILITY.UNCOMPLETED:
+        return allClues.filter(clue => !clue.completed);
+      default:
+        alert(`Expected a valid clue visibility, got: ${clueVisibility}`);
+    }
   }
 
   // Select the given clue/marker to populate the info window

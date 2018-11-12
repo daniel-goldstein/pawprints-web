@@ -39,13 +39,22 @@
 }
 
 .dashboard-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .dashboard-center {
 }
 
-.dashboard-right {
+.bottom-right-absolute {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
 
+.dashboard-form {
+  margin-left: 5%;
 }
 
 input[type=text], input[type=number] {
@@ -55,7 +64,7 @@ input[type=text], input[type=number] {
   box-sizing: border-box;
 }
 
-input[type="submit"] {
+input[type=submit] {
   background-color: #4CAF50;
   border: none;
   color: white;
