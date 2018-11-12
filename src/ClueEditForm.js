@@ -17,7 +17,7 @@ export default class ClueEditForm extends React.Component {
     super(props);
 
     this.state = {
-      clueNumber: this.props.clue.clueNumber,
+      clueId: this.props.clue.clueId,
       title: this.props.clue.title,
       completedStatus: this.props.clue.completed
     };
@@ -35,11 +35,11 @@ export default class ClueEditForm extends React.Component {
       <div>
         <form onSubmit={this.handleSubmit}>
           <FormGroup>
-            <ControlLabel>Clue Number</ControlLabel>
+            <ControlLabel>Clue ID</ControlLabel>
             <FormControl
-              type="number"
-              value={this.state.clueNumber}
-              name="clueNumber"
+              type="text"
+              value={this.state.clueId}
+              name="clueId"
               onChange={this.handleChange}
             />
           </FormGroup>
@@ -74,7 +74,7 @@ export default class ClueEditForm extends React.Component {
     e.preventDefault();
 
     let updatedClueFields = {
-      clueNumber: parseInt(this.state.clueNumber),
+      clueId: this.state.clueId,
       title: this.state.title,
       completed: this.state.completedStatus
     };

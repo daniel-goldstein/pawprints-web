@@ -5,7 +5,7 @@ import {cluesRef} from "./fire";
 import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
 
 const initialState = {
-  clueNumber: 0,
+  clueId: "",
   title: "",
   location: null
 };
@@ -45,11 +45,11 @@ export default class ClueUploadForm extends React.Component {
         <form onSubmit={this.handleSubmit}>
 
           <FormGroup bsSize="large">
-            <ControlLabel>Clue Number</ControlLabel>
+            <ControlLabel>Clue ID</ControlLabel>
             <FormControl
-              type="number"
-              value={this.state.clueNumber}
-              name="clueNumber"
+              type="text"
+              value={this.state.clueId}
+              name="clueId"
               onChange={this.handleChange}
             />
           </FormGroup>
@@ -79,17 +79,17 @@ export default class ClueUploadForm extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
 
-    let clueNumber = this.state.clueNumber;
+    let clueId = this.state.clueId;
     let title = this.state.title;
     let location = this.state.location;
 
-    if (!clueNumber || !title || !location) {
+    if (!clueId || !title || !location) {
       alert("Please fill out all fields!");
       return;
     }
 
     let clue = {
-      clueNumber: parseInt(clueNumber),
+      clueId: clueId,
       title: title,
       latitude: location.lat,
       longitude: location.lng,
@@ -97,7 +97,9 @@ export default class ClueUploadForm extends React.Component {
     };
     cluesRef.push(clue);
 
+    // Go back to initial form state
     this.setState(initialState);
+    ReactDOM.findDOMNode(this.refs.searchBox).value = "";
   };
 
   componentWillUnmount() {
