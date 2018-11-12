@@ -61,6 +61,7 @@
 
 .dashboard-form {
   margin-left: 5%;
+  width: 300px;
 }
 
 input[type=text], input[type=number] {

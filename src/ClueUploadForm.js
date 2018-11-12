@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {cluesRef} from "./fire";
 
+import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+
 const initialState = {
   clueNumber: 0,
   title: "",
@@ -42,26 +44,33 @@ export default class ClueUploadForm extends React.Component {
         <h2>Drop a clue!</h2>
         <form onSubmit={this.handleSubmit}>
 
-          <label>Clue Number</label>
-          <input type="number"
-                 value={this.state.clueNumber}
-                 name="clueNumber"
-                 onChange={this.handleChange}/>
-          <br />
+          <FormGroup>
+            <ControlLabel>Clue Number</ControlLabel>
+            <FormControl
+              type="number"
+              value={this.state.clueNumber}
+              name="clueNumber"
+              onChange={this.handleChange}
+            />
+          </FormGroup>
 
-          <label>Title</label>
-          <br />
-          <input type="text" value={this.state.title}
-                 name="title"
-                 onChange={this.handleChange}/>
+          <FormGroup>
+            <ControlLabel>Title</ControlLabel>
+            <FormControl
+              type="text"
+              value={this.state.title}
+              name="title"
+              onChange={this.handleChange}
+            />
+          </FormGroup>
 
-          <br />
 
-          <label>Location</label>
-          <input type="text" ref="searchBox" />
-          <br />
+          <FormGroup>
+            <ControlLabel>Title</ControlLabel>
+            <FormControl type="text" ref="searchBox"/>
+          </FormGroup>
 
-          <input type="submit" value="submit" />
+          <Button bsStyle="primary" type="submit" value="submit">Submit</Button>
         </form>
       </div>
     );
