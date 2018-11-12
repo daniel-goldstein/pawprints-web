@@ -103,7 +103,7 @@ class Dashboard extends Component {
                onHide={this.toggleShowingClueEditWindow}>
           <Modal.Header closeButton>
             <Modal.Title>Edit Clue</Modal.Title>
-            <ClueEditForm clue={this.state.selectedClue} onSubmit={this.updateClue}/>
+            <ClueEditForm clue={this.state.selectedClue} postSubmit={this.removeClueFocus}/>
           </Modal.Header>
         </Modal>
       </div>
@@ -167,13 +167,6 @@ class Dashboard extends Component {
     let prevValue = this.state.showingClueEditWindow;
     this.setState({showingClueEditWindow: !prevValue});
   };
-
-  // Handle submit of clue editing form
-  updateClue = (updatedClueFields) => {
-    cluesRef.child(this.state.selectedClue.key).update(updatedClueFields);
-
-    this.removeClueFocus();
-  }
 }
 
 export default GoogleApiWrapper({

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { cluesRef } from "./fire";
+
 import {
   FormGroup,
   ControlLabel,
@@ -76,7 +78,8 @@ export default class ClueEditForm extends React.Component {
       title: this.state.title,
       completed: this.state.completedStatus
     };
+    cluesRef.child(this.props.clue.key).update(updatedClueFields);
 
-    this.props.onSubmit(updatedClueFields);
+    this.props.postSubmit();
   }
 }
