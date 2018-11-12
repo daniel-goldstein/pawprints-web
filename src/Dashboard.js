@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import {GoogleApiWrapper, Map, Marker, InfoWindow} from 'google-maps-react';
+import { ToggleButtonGroup, ToggleButton, Modal, Button }
+from 'react-bootstrap';
 
-import { ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
-
-import ClueUploadForm from './ClueUploadForm';
 import './App.css';
 
 import { cluesRef } from "./fire";
-import ClueInfo from './ClueInfo';
 import { GOOGLE_MAPS_API_KEY } from "./properties";
+import ClueInfo from './ClueInfo';
+import ClueUploadForm from './ClueUploadForm';
+import ClueEditForm from "./ClueEditForm";
 
 const BOSTON = {
   lat: 42.3601,
@@ -31,6 +32,7 @@ class Dashboard extends Component {
       selectedClue: null,
       activeMarker: null,
       showingInfoWindow: false,
+      showingClueEditWindow: false,
       clueVisibility: CLUE_VISIBILITY.ALL
     }
   }
@@ -58,16 +60,16 @@ class Dashboard extends Component {
         <div className="dashboard-center" id="map">
           <Map google={this.props.google}
                zoom={14}
-               onClick={this.removeSelectedClueAndInfoWindow}
+               onClick={this.removeClueFocus}
                initialCenter={BOSTON}>
 
             {this.renderClues()}
 
             <InfoWindow
-              onClose={this.removeSelectedClueAndInfoWindow}
+              onClose={this.removeClueFocus}
               marker={this.state.activeMarker}
               visible={this.state.showingInfoWindow}>
-              <ClueInfo clue={this.state.selectedClue}/>
+              <ClueInfo clue={this.state.selectedClue} />
             </InfoWindow>
           </Map>
         </div>
@@ -89,23 +91,39 @@ class Dashboard extends Component {
             </ToggleButton>
           </ToggleButtonGroup>
         </div>
+
+        <Button className="top-right-absolute"
+                bsStyle="primary"
+                disabled={!this.state.selectedClue} // Only allow editing when clue selected
+                onClick={this.toggleShowingClueEditWindow}>
+          Edit Clue
+        </Button>
+
+        <Modal show={this.state.showingClueEditWindow}
+               onHide={this.toggleShowingClueEditWindow}>
+          <Modal.Header closeButton>
+            <Modal.Title>Edit Clue</Modal.Title>
+            <ClueEditForm clue={this.state.selectedClue} onSubmit={this.updateClue}/>
+          </Modal.Header>
+        </Modal>
       </div>
     );
   }
 
-  removeSelectedClueAndInfoWindow = () => {
+  removeClueFocus = () => {
     if (this.state.showingInfoWindow) {
       this.setState({
         showingInfoWindow: false,
         activeMarker: null,
-        selectedClue: null
+        selectedClue: null,
+        showingClueEditWindow: false
       })
     }
   };
 
   // Render all the clue markers
   renderClues() {
-    let cluesToShow = this.filterClues(this.state.clueVisibility);
+    const cluesToShow = this.filterClues(this.state.clueVisibility);
 
     return cluesToShow.map((clue, index) => {
       const coords = { lat: clue.latitude, lng: clue.longitude };
@@ -144,6 +162,18 @@ class Dashboard extends Component {
       showingInfoWindow: true
     });
   };
+
+  toggleShowingClueEditWindow = () => {
+    let prevValue = this.state.showingClueEditWindow;
+    this.setState({showingClueEditWindow: !prevValue});
+  };
+
+  // Handle submit of clue editing form
+  updateClue = (updatedClueFields) => {
+    cluesRef.child(this.state.selectedClue.key).update(updatedClueFields);
+
+    this.removeClueFocus();
+  }
 }
 
 export default GoogleApiWrapper({
