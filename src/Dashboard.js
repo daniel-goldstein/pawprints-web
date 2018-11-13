@@ -5,11 +5,13 @@ from 'react-bootstrap';
 
 import './App.css';
 
-import { cluesRef } from "./fire";
+import { cluesRef, huntersRef } from "./fire";
 import { GOOGLE_MAPS_API_KEY } from "./properties";
 import ClueInfo from './ClueInfo';
 import ClueUploadForm from './ClueUploadForm';
 import ClueEditForm from "./ClueEditForm";
+
+import demonHusky from './husky.png';
 
 const BOSTON = {
   lat: 42.3601,
@@ -29,15 +31,22 @@ class Dashboard extends Component {
 
     this.state = {
       clues: [],
+      hunters: [],
       selectedClue: null,
-      activeMarker: null,
-      showingInfoWindow: false,
+      selectedClueMarker: null,
+      selectedHunter: null,
+      selectedHunterMarker: null,
       showingClueEditWindow: false,
       clueVisibility: CLUE_VISIBILITY.ALL
     }
   }
 
   componentDidMount() {
+    this.fetchClueData();
+    this.fetchHunterData();
+  }
+
+  fetchClueData() {
     //Listen for ANY updates to clues and sync with clues state
     cluesRef.on('value', snapshot => {
       let clues = [];
@@ -46,6 +55,17 @@ class Dashboard extends Component {
       });
 
       this.setState({ clues })
+    });
+  }
+
+  fetchHunterData() {
+    huntersRef.on('value', snapshot => {
+      let hunters = [];
+      snapshot.forEach(item => {
+        hunters.push({ ...item.val(), name: item.key});
+      });
+
+      this.setState({ hunters });
     });
   }
 
@@ -60,16 +80,23 @@ class Dashboard extends Component {
         <div className="dashboard-center" id="map">
           <Map google={this.props.google}
                zoom={14}
-               onClick={this.removeClueFocus}
+               onClick={this.removeFocus}
                initialCenter={BOSTON}>
 
             {this.renderClues()}
+            {this.renderHunters()}
 
             <InfoWindow
-              onClose={this.removeClueFocus}
-              marker={this.state.activeMarker}
-              visible={this.state.showingInfoWindow}>
+              onClose={this.removeFocus}
+              marker={this.state.selectedClueMarker}
+              visible={this.state.selectedClue !== null}>
               <ClueInfo clue={this.state.selectedClue} />
+            </InfoWindow>
+            <InfoWindow
+              onClose={this.removeFocus}
+              marker={this.state.selectedHunterMarker}
+              visible={this.state.selectedHunter !== null}>
+              <h4>{this.state.selectedHunter ? this.state.selectedHunter.name : undefined}</h4>
             </InfoWindow>
           </Map>
         </div>
@@ -103,21 +130,22 @@ class Dashboard extends Component {
                onHide={this.toggleShowingClueEditWindow}>
           <Modal.Header closeButton>
             <Modal.Title>Edit Clue</Modal.Title>
-            <ClueEditForm clue={this.state.selectedClue} postSubmit={this.removeClueFocus}/>
+            <ClueEditForm clue={this.state.selectedClue} postSubmit={this.removeFocus}/>
           </Modal.Header>
         </Modal>
       </div>
     );
   }
 
-  removeClueFocus = () => {
-    if (this.state.showingInfoWindow) {
+  removeFocus = () => {
+    if (this.state.selectedClue || this.state.selectedHunter) {
       this.setState({
-        showingInfoWindow: false,
-        activeMarker: null,
         selectedClue: null,
+        selectedClueMarker: null,
+        selectedHunter: null,
+        selectedHunterMarker: null,
         showingClueEditWindow: false
-      })
+      });
     }
   };
 
@@ -133,7 +161,7 @@ class Dashboard extends Component {
           key={index}
           position={coords}
           title={clue.title}
-          onClick={(_, marker) => this.onMarkerClick(clue, marker)}
+          onClick={(_, marker) => this.selectClue(clue, marker)}
         />
       );
     });
@@ -154,12 +182,37 @@ class Dashboard extends Component {
     }
   }
 
+  renderHunters() {
+    return this.state.hunters.map(hunter => {
+      const coords = { lat: hunter.latitude, lng: hunter.longitude };
+
+      return (
+        <Marker
+          key={hunter.name}
+          position={coords}
+          title={hunter.name}
+          icon={{
+            url: demonHusky,
+            anchor: new this.props.google.maps.Point(32,32),
+            scaledSize: new this.props.google.maps.Size(32,32)}}
+          onClick={(_, marker) => this.selectHunter(hunter, marker)}
+        />
+      );
+    });
+  }
+
   // Select the given clue/marker to populate the info window
-  onMarkerClick = (clue, marker) => {
+  selectClue = (clue, marker) => {
     this.setState({
       selectedClue: clue,
-      activeMarker: marker,
-      showingInfoWindow: true
+      selectedClueMarker: marker
+    });
+  };
+
+  selectHunter = (hunter, marker) => {
+    this.setState({
+      selectedHunter: hunter,
+      selectedHunterMarker: marker
     });
   };
 
