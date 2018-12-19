@@ -11,6 +11,7 @@ import {
   Button
 }
 from 'react-bootstrap';
+import {VIEW_ONLY_MODE} from "./properties";
 
 export default class ClueEditForm extends React.Component {
   constructor(props) {
@@ -64,13 +65,17 @@ export default class ClueEditForm extends React.Component {
               <ToggleButton value={false}>Uncompleted</ToggleButton>
             </ToggleButtonGroup>
           </FormGroup>
-          <Button type="submit" bsStyle="primary">Submit</Button>
+          <Button type="submit"
+                  disabled={VIEW_ONLY_MODE}
+                  bsStyle="primary">
+            Submit</Button>
         </form>
       </div>
     );
   }
 
   handleSubmit = e => {
+    if (VIEW_ONLY_MODE) { return; }
     e.preventDefault();
 
     let updatedClueFields = {

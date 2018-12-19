@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {cluesRef} from "./fire";
+import { VIEW_ONLY_MODE } from "./properties";
 
 import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
 
@@ -70,13 +71,19 @@ export default class ClueUploadForm extends React.Component {
             <FormControl type="text" ref="searchBox"/>
           </FormGroup>
 
-          <Button bsStyle="primary" type="submit" value="submit">Submit</Button>
+          <Button bsStyle="primary" type="submit" value="submit"
+                  disabled={VIEW_ONLY_MODE}>
+            Submit
+          </Button>
+          { VIEW_ONLY_MODE && <ControlLabel>This application is in view-only mode</ControlLabel>}
         </form>
       </div>
     );
   }
 
   handleSubmit = e => {
+    if (VIEW_ONLY_MODE) { return; }
+
     e.preventDefault();
 
     let clueId = this.state.clueId;
