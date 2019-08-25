@@ -13,6 +13,9 @@ import {
 from 'react-bootstrap';
 import {VIEW_ONLY_MODE} from "./properties";
 
+import LocationSearchBox from './LocationSearchBox';
+import './App.css';
+
 export default class ClueEditForm extends React.Component {
   constructor(props) {
     super(props);
@@ -20,7 +23,8 @@ export default class ClueEditForm extends React.Component {
     this.state = {
       clueId: this.props.clue.clueId,
       title: this.props.clue.title,
-      completedStatus: this.props.clue.completed
+      completedStatus: this.props.clue.completed,
+      location: { lat: this.props.clue.latitude, lng: this.props.clue.longitude }
     };
   }
 
@@ -44,6 +48,7 @@ export default class ClueEditForm extends React.Component {
               onChange={this.handleChange}
             />
           </FormGroup>
+
           <FormGroup>
             <ControlLabel>Title</ControlLabel>
             <FormControl
@@ -53,6 +58,7 @@ export default class ClueEditForm extends React.Component {
               onChange={this.handleChange}
             />
           </FormGroup>
+
           <FormGroup>
             <ControlLabel>Status</ControlLabel>
             <br /> {/* Don't know why this needs to be here */}
@@ -64,6 +70,13 @@ export default class ClueEditForm extends React.Component {
               <ToggleButton value={true}>Completed</ToggleButton>
               <ToggleButton value={false}>Uncompleted</ToggleButton>
             </ToggleButtonGroup>
+          </FormGroup>
+
+          <FormGroup bsSize="large">
+            <ControlLabel>Location</ControlLabel>
+            <LocationSearchBox google={this.props.google}
+                               onSelect={(loc) => this.setState({location: loc})}
+                               clearLocation={this.state.location == null}/>
           </FormGroup>
           <Button type="submit"
                   disabled={VIEW_ONLY_MODE}
@@ -81,7 +94,9 @@ export default class ClueEditForm extends React.Component {
     let updatedClueFields = {
       clueId: this.state.clueId,
       title: this.state.title,
-      completed: this.state.completedStatus
+      completed: this.state.completedStatus,
+      latitude: this.state.location.lat,
+      longitude: this.state.location.lng
     };
     cluesRef.child(this.props.clue.key).update(updatedClueFields);
 

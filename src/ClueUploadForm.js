@@ -56,8 +56,7 @@ export default class ClueUploadForm extends React.Component {
 
           <FormGroup bsSize="large">
             <ControlLabel>Location</ControlLabel>
-            <LocationSearchBox ref="location_search"
-                               google={this.props.google}
+            <LocationSearchBox google={this.props.google}
                                onSelect={(loc) => this.setState({location: loc})}
                                clearLocation={this.state.location == null}/>
           </FormGroup>
@@ -97,8 +96,4 @@ export default class ClueUploadForm extends React.Component {
     // Go back to initial form state
     this.setState(initialState);
   };
-
-  componentWillUnmount() {
-    this.searchBox.removeListener(this.searchBoxListener);
-  }
 }
