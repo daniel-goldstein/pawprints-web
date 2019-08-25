@@ -86,12 +86,20 @@ class Dashboard extends Component {
             {this.renderClues()}
             {this.renderHunters()}
 
-            <InfoWindow
+            <ClueInfo
               onClose={this.removeFocus}
               marker={this.state.selectedClueMarker}
               visible={this.state.selectedClue !== null}>
-              <ClueInfo clue={this.state.selectedClue} />
-            </InfoWindow>
+              { (this.state.selectedClue) ?
+                <div>
+                <h4>{this.state.selectedClue.title} ({this.state.selectedClue.clueId})</h4>
+                <h5>{this.state.selectedClue.completed ? "Complete" : "Incomplete"}</h5>
+                </div>
+                  :
+                  undefined
+              }
+              <Button onClick={this.toggleShowingClueEditWindow}>Edit</Button>
+            </ClueInfo>
             <InfoWindow
               onClose={this.removeFocus}
               marker={this.state.selectedHunterMarker}
@@ -118,13 +126,6 @@ class Dashboard extends Component {
             </ToggleButton>
           </ToggleButtonGroup>
         </div>
-
-        <Button className="top-right-absolute"
-                bsStyle="primary"
-                disabled={!this.state.selectedClue} // Only allow editing when clue selected
-                onClick={this.toggleShowingClueEditWindow}>
-          Edit Clue
-        </Button>
 
         <Modal show={this.state.showingClueEditWindow}
                onHide={this.toggleShowingClueEditWindow}>
