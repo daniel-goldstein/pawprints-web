@@ -82,6 +82,9 @@ export default class ClueEditForm extends React.Component {
                   disabled={VIEW_ONLY_MODE}
                   bsStyle="primary">
             Submit</Button>
+          <Button disabled={VIEW_ONLY_MODE}
+                  bsStyle="danger">
+            Delete</Button>
         </form>
       </div>
     );
