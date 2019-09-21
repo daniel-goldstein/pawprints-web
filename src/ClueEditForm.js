@@ -78,13 +78,14 @@ export default class ClueEditForm extends React.Component {
                                onSelect={(loc) => this.setState({location: loc})}
                                clearLocation={this.state.location == null}/>
           </FormGroup>
-          <Button type="submit"
-                  disabled={VIEW_ONLY_MODE}
-                  bsStyle="primary">
-            Submit</Button>
-          <Button disabled={VIEW_ONLY_MODE}
-                  bsStyle="danger">
-            Delete</Button>
+          <div className="submit-delete-row">
+            <Button type="submit" disabled={VIEW_ONLY_MODE} bsStyle="primary">
+              Submit
+            </Button>
+            <Button disabled={VIEW_ONLY_MODE} bsStyle="danger">
+              Delete
+            </Button>
+          </div>
         </form>
       </div>
     );
