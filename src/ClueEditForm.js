@@ -82,7 +82,7 @@ export default class ClueEditForm extends React.Component {
             <Button type="submit" disabled={VIEW_ONLY_MODE} bsStyle="primary">
               Submit
             </Button>
-            <Button disabled={VIEW_ONLY_MODE} bsStyle="danger">
+            <Button onClick={this.handleDelete} disabled={VIEW_ONLY_MODE} bsStyle="danger">
               Delete
             </Button>
           </div>
@@ -104,6 +104,14 @@ export default class ClueEditForm extends React.Component {
     };
     cluesRef.child(this.props.clue.key).update(updatedClueFields);
 
-    this.props.postSubmit();
+    this.props.afterSubmit();
+  }
+
+  handleDelete = e => {
+    if (VIEW_ONLY_MODE) { return; }
+    e.preventDefault();
+
+    cluesRef.child(this.props.clue.key).remove();
+    this.props.afterSubmit();
   }
 }

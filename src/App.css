@@ -22,15 +22,6 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .dashboard-container {
   display: flex;
   flex-direction: row; /* Already the default */
@@ -42,9 +33,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-
-.dashboard-center {
 }
 
 .bottom-right-absolute {
@@ -60,12 +48,17 @@
 }
 
 .dashboard-form {
-  margin-left: 5%;
+  padding: 5%;
   width: 300px;
 }
 
+.submit-delete-row {
+  display: flex;
+  justify-content: space-between;
+}
+
 input[type=text], input[type=number] {
-  width: 90%;
+  width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
   box-sizing: border-box;
