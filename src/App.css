@@ -81,9 +81,19 @@ input[type=submit] {
   cursor: pointer;
 }
 
+// Supposed to 
+// put the google places autocomplete dropdown results above the bootstrap modal 1050 zindex.
+div.pac-container {
+    z-index: 99999999999 !important;
+}
 
+.modal {
+  z-index: 600;
+}
 
-
+.modal-backdrop {
+  z-index: 500;
+}
 
 
 
