@@ -130,7 +130,7 @@ class Dashboard extends Component {
                onHide={this.toggleShowingClueEditWindow}>
           <Modal.Header closeButton>
             <Modal.Title>Edit Clue</Modal.Title>
-            <ClueEditForm clue={this.state.selectedClue} postSubmit={this.removeFocus}/>
+            <ClueEditForm google={this.props.google} clue={this.state.selectedClue} afterSubmit={this.removeFocus}/>
           </Modal.Header>
         </Modal>
       </div>

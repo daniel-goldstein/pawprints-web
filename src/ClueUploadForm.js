@@ -5,6 +5,8 @@ import { VIEW_ONLY_MODE } from "./properties";
 
 import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
 
+import LocationSearchBox from './LocationSearchBox';
+
 const initialState = {
   clueId: "",
   title: "",
@@ -18,25 +20,11 @@ export default class ClueUploadForm extends React.Component {
     this.state = initialState;
   }
 
-  componentDidMount() {
-    // Connect google search API to the search box
-    let searchBoxInput = ReactDOM.findDOMNode(this.refs.searchBox);
-    this.searchBox = new this.props.google.maps.places.SearchBox(searchBoxInput);
-    this.searchBoxListener = this.searchBox.addListener('places_changed', this.onPlacesChanged);
-  }
-
   handleChange = (event) => {
     let name = event.target.name;
     let value = event.target.value;
 
     this.setState({ [name] : value });
-  };
-
-  onPlacesChanged = () => {
-    let places = this.searchBox.getPlaces();
-    let loc = places[0].geometry.location; // Grab the location of the first search result
-    let latLng = {lat: loc.lat(), lng: loc.lng()};
-    this.setState({location: latLng});
   };
 
   render() {
@@ -68,11 +56,12 @@ export default class ClueUploadForm extends React.Component {
 
           <FormGroup bsSize="large">
             <ControlLabel>Location</ControlLabel>
-            <FormControl type="text" ref="searchBox"/>
+            <LocationSearchBox google={this.props.google}
+                               onSelect={(loc) => this.setState({location: loc})}
+                               clearLocation={this.state.location == null}/>
           </FormGroup>
 
-          <Button bsStyle="primary" type="submit" value="submit"
-                  disabled={VIEW_ONLY_MODE}>
+          <Button bsStyle="primary" type="submit" value="submit" disabled={VIEW_ONLY_MODE}>
             Submit
           </Button>
           { VIEW_ONLY_MODE && <ControlLabel>This application is in view-only mode</ControlLabel>}
@@ -106,10 +95,5 @@ export default class ClueUploadForm extends React.Component {
 
     // Go back to initial form state
     this.setState(initialState);
-    ReactDOM.findDOMNode(this.refs.searchBox).value = "";
   };
-
-  componentWillUnmount() {
-    this.searchBox.removeListener(this.searchBoxListener);
-  }
 }
