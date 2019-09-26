@@ -90,14 +90,7 @@ class Dashboard extends Component {
               onClose={this.removeFocus}
               marker={this.state.selectedClueMarker}
               visible={this.state.selectedClue !== null}>
-              { (this.state.selectedClue) ?
-                <div>
-                <h4>{this.state.selectedClue.title} ({this.state.selectedClue.clueId})</h4>
-                <h5>{this.state.selectedClue.completed ? "Complete" : "Incomplete"}</h5>
-                </div>
-                  :
-                  undefined
-              }
+              { this.state.selectedClue && this.renderClueInfo() }
               <Button onClick={this.toggleShowingClueEditWindow}>Edit</Button>
             </ClueInfo>
             <InfoWindow
@@ -200,6 +193,15 @@ class Dashboard extends Component {
         />
       );
     });
+  }
+
+  renderClueInfo() {
+    return (
+      <div>
+        <h4>{this.state.selectedClue.title} ({this.state.selectedClue.clueId})</h4>
+        <h5>{this.state.selectedClue.completed ? "Complete" : "Incomplete"}</h5>
+      </div>
+    );
   }
 
   // Select the given clue/marker to populate the info window
