@@ -11,7 +11,7 @@ export default class ClueInfo extends React.Component {
 
     return (
       <div>
-        <h4>{clue.title} ({clue.clueId})</h4>
+        <h4>{clue.title} ({clue.clueListId}{clue.clueNum})</h4>
         <h5>{status}</h5>
       </div>
     );

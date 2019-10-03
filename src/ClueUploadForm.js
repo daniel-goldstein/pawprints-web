@@ -3,12 +3,14 @@ import ReactDOM from 'react-dom';
 import {cluesRef} from "./fire";
 import { VIEW_ONLY_MODE } from "./properties";
 
-import { FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+import { Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
 
 import LocationSearchBox from './LocationSearchBox';
 
 const initialState = {
-  clueId: "",
+  clueListId: "",
+  clueNum: 0,
+  inCrawl: false,
   title: "",
   location: null
 };
@@ -33,15 +35,26 @@ export default class ClueUploadForm extends React.Component {
         <h2>Drop a clue!</h2>
         <form onSubmit={this.handleSubmit}>
 
-          <FormGroup bsSize="large">
-            <ControlLabel>Clue ID</ControlLabel>
-            <FormControl
-              type="text"
-              value={this.state.clueId}
-              name="clueId"
-              onChange={this.handleChange}
-            />
-          </FormGroup>
+          <div className="side-by-side">
+            <FormGroup bsSize="large">
+              <ControlLabel>Clue List ID</ControlLabel>
+              <FormControl
+                type="text"
+                value={this.state.clueListId}
+                name="clueListId"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+            <FormGroup bsSize="large">
+              <ControlLabel>Clue #</ControlLabel>
+              <FormControl
+                type="number"
+                value={this.state.clueNum}
+                name="clueNum"
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+          </div>
 
           <FormGroup bsSize="large">
             <ControlLabel>Title</ControlLabel>
@@ -75,17 +88,19 @@ export default class ClueUploadForm extends React.Component {
 
     e.preventDefault();
 
-    let clueId = this.state.clueId;
+    let clueListId = this.state.clueListId;
+    let clueNum = this.state.clueNum;
     let title = this.state.title;
     let location = this.state.location;
 
-    if (!clueId || !title || !location) {
+    if (!clueListId || !clueNum || !title || !location) {
       alert("Please fill out all fields!");
       return;
     }
 
     let clue = {
-      clueId: clueId,
+      clueListId: clueListId,
+      clueNum: clueNum,
       title: title,
       latitude: location.lat,
       longitude: location.lng,
