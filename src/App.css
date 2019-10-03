@@ -24,7 +24,6 @@
 
 .dashboard-container {
   display: flex;
-  flex-direction: row; /* Already the default */
   justify-content: flex-start;
   align-items: stretch;
 }
@@ -50,6 +49,11 @@
 .dashboard-form {
   padding: 5%;
   width: 300px;
+}
+
+.side-by-side {
+  display: flex;
+  justify-content: space-between;
 }
 
 .submit-delete-row {
@@ -87,10 +91,3 @@ div.pac-container {
 .modal-backdrop {
   z-index: 500;
 }
-
-
-
-
-
-
-
