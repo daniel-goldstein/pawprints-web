@@ -1,20 +1,29 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
+import { Button } from 'react-bootstrap';
+import { InfoWindow } from 'google-maps-react';
 
 export default class ClueInfo extends React.Component {
-  render() {
-    const clue = this.props.clue;
-    if (!clue) {
-      return <div/>;
+  constructor(props) {
+    super(props);
+    this.infoWindowRef = React.createRef();
+    this.contentElement = document.createElement(`div`);
+  }
+
+  // Annoying workaround since google.InfoWindow doesn't allow
+  // event callbacks from within the component
+  // https://stackoverflow.com/questions/53615413/how-to-add-a-button-in-infowindow-with-google-maps-react
+  componentDidUpdate(prevProps) {
+    if (this.props.children !== prevProps.children) {
+      ReactDOM.render(
+        this.props.children,
+        this.contentElement
+      );
+      this.infoWindowRef.current.infowindow.setContent(this.contentElement);
     }
+  }
 
-    let status = clue.completed ? "Completed" : "Not completed";
-
-    return (
-      <div>
-        <h4>{clue.title} ({clue.clueListId}{clue.clueNum})</h4>
-        {clue.inCrawl ? <h5>Crawl stop</h5> : undefined}
-        <h5>{status}</h5>
-      </div>
-    );
+  render() {
+    return <InfoWindow ref={this.infoWindowRef} {...this.props} />;
   }
 }

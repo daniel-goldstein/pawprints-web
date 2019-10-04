@@ -86,12 +86,13 @@ class Dashboard extends Component {
             {this.renderClues()}
             {this.renderHunters()}
 
-            <InfoWindow
+            <ClueInfo
               onClose={this.removeFocus}
               marker={this.state.selectedClueMarker}
               visible={this.state.selectedClue !== null}>
-              <ClueInfo clue={this.state.selectedClue} />
-            </InfoWindow>
+              { this.state.selectedClue && this.renderClueInfo() }
+              <Button onClick={this.toggleShowingClueEditWindow}>Edit</Button>
+            </ClueInfo>
             <InfoWindow
               onClose={this.removeFocus}
               marker={this.state.selectedHunterMarker}
@@ -118,13 +119,6 @@ class Dashboard extends Component {
             </ToggleButton>
           </ToggleButtonGroup>
         </div>
-
-        <Button className="top-right-absolute"
-                bsStyle="primary"
-                disabled={!this.state.selectedClue} // Only allow editing when clue selected
-                onClick={this.toggleShowingClueEditWindow}>
-          Edit Clue
-        </Button>
 
         <Modal show={this.state.showingClueEditWindow}
                onHide={this.toggleShowingClueEditWindow}>
@@ -199,6 +193,18 @@ class Dashboard extends Component {
         />
       );
     });
+  }
+
+  renderClueInfo() {
+    let clue = this.state.selectedClue;
+    let status = clue.completed ? "Complete" : "Not Completed";
+    return (
+      <div>
+        <h4>{clue.title} ({clue.clueListId}{clue.clueNum})</h4>
+        {clue.inCrawl ? <h5>Crawl stop</h5> : undefined}
+        <h5>{status}</h5>
+      </div>
+    );
   }
 
   // Select the given clue/marker to populate the info window
