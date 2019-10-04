@@ -24,6 +24,8 @@ yarn-error.log*
 
 .idea
 
+package-lock.json
+
 # Properties
 src/properties.js
 
@@ -33,3 +35,4 @@ src/properties.js
 database.rules.json
 firebase.json
 storage.rules
+
