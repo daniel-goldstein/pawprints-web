@@ -10,6 +10,7 @@ import { GOOGLE_MAPS_API_KEY } from "./properties";
 import ClueInfo from './ClueInfo';
 import ClueUploadForm from './ClueUploadForm';
 import ClueEditForm from "./ClueEditForm";
+import ClueList from "./ClueList";
 
 import demonHusky from './husky.png';
 
@@ -71,6 +72,7 @@ class Dashboard extends Component {
 
   render() {
     return (
+      <div className="full-screen">
       <div className="dashboard-container" id="container">
 
         <div className="dashboard-left" id="clue-upload-form">
@@ -100,24 +102,27 @@ class Dashboard extends Component {
               <h4>{this.state.selectedHunter ? this.state.selectedHunter.name : undefined}</h4>
             </InfoWindow>
           </Map>
+          <div className="bottom-right-absolute">
+            <ToggleButtonGroup type="radio"
+                               name="clue-visibility-radio"
+                               onChange={(value) => this.setState({clueVisibility: value})}
+                               defaultValue={this.state.clueVisibility}>
+
+              <ToggleButton value={CLUE_VISIBILITY.ALL}>
+                {CLUE_VISIBILITY.ALL}
+              </ToggleButton>
+              <ToggleButton value={CLUE_VISIBILITY.COMPLETED}>
+                {CLUE_VISIBILITY.COMPLETED}
+              </ToggleButton>
+              <ToggleButton value={CLUE_VISIBILITY.UNCOMPLETED}>
+                {CLUE_VISIBILITY.UNCOMPLETED}
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </div>
         </div>
 
-        <div className="bottom-right-absolute">
-          <ToggleButtonGroup type="radio"
-                             name="clue-visibility-radio"
-                             onChange={(value) => this.setState({clueVisibility: value})}
-                             defaultValue={this.state.clueVisibility}>
-
-            <ToggleButton value={CLUE_VISIBILITY.ALL}>
-              {CLUE_VISIBILITY.ALL}
-            </ToggleButton>
-            <ToggleButton value={CLUE_VISIBILITY.COMPLETED}>
-              {CLUE_VISIBILITY.COMPLETED}
-            </ToggleButton>
-            <ToggleButton value={CLUE_VISIBILITY.UNCOMPLETED}>
-              {CLUE_VISIBILITY.UNCOMPLETED}
-            </ToggleButton>
-          </ToggleButtonGroup>
+        <div className="dashboard-right">
+          <ClueList clues={this.state.clues}/>
         </div>
 
         <Modal show={this.state.showingClueEditWindow}
@@ -127,6 +132,7 @@ class Dashboard extends Component {
             <ClueEditForm google={this.props.google} clue={this.state.selectedClue} afterSubmit={this.removeFocus}/>
           </Modal.Header>
         </Modal>
+      </div>
       </div>
     );
   }
