@@ -2,6 +2,8 @@ import React from 'react';
 
 import { cluesRef } from "./fire";
 
+import Form from 'react-bootstrap/Form';
+
 import {
   FormGroup,
   ControlLabel,
@@ -23,16 +25,14 @@ export default class ClueEditForm extends React.Component {
     this.state = {
       clueId: this.props.clue.clueId,
       title: this.props.clue.title,
+      inCrawl: this.props.clue.inCrawl,
       completedStatus: this.props.clue.completed,
       location: { lat: this.props.clue.latitude, lng: this.props.clue.longitude }
     };
   }
 
-  handleChange = (event) => {
-    let name = event.target.name;
-    let value = event.target.value;
-
-    this.setState({ [name] : value });
+  handleChange = name => event => {
+    this.setState({ [name] : event.target.value });
   };
 
   render() {
@@ -44,8 +44,7 @@ export default class ClueEditForm extends React.Component {
             <FormControl
               type="text"
               value={this.state.clueId}
-              name="clueId"
-              onChange={this.handleChange}
+              onChange={this.handleChange("clueId")}
             />
           </FormGroup>
 
@@ -54,10 +53,10 @@ export default class ClueEditForm extends React.Component {
             <FormControl
               type="text"
               value={this.state.title}
-              name="title"
-              onChange={this.handleChange}
+              onChange={this.handleChange("title")}
             />
           </FormGroup>
+
 
           <FormGroup>
             <ControlLabel>Status</ControlLabel>
@@ -71,12 +70,20 @@ export default class ClueEditForm extends React.Component {
               <ToggleButton value={false}>Uncompleted</ToggleButton>
             </ToggleButtonGroup>
           </FormGroup>
+          <Form.Group>
+            <ControlLabel>Crawl?</ControlLabel>
+            <Form.Check
+              type="checkbox"
+              checked={this.state.inCrawl}
+              onChange={() => this.setState({inCrawl: !this.state.inCrawl})}
+            />
+          </Form.Group>
 
           <FormGroup bsSize="large">
             <ControlLabel>Location</ControlLabel>
             <LocationSearchBox google={this.props.google}
                                onSelect={(loc) => this.setState({location: loc})}
-                               clearLocation={this.state.location == null}/>
+                               clearLocation={this.state.location === null}/>
           </FormGroup>
           <div className="submit-delete-row">
             <Button type="submit" disabled={VIEW_ONLY_MODE} bsStyle="primary">
@@ -98,6 +105,7 @@ export default class ClueEditForm extends React.Component {
     let updatedClueFields = {
       clueId: this.state.clueId,
       title: this.state.title,
+      inCrawl: this.state.inCrawl,
       completed: this.state.completedStatus,
       latitude: this.state.location.lat,
       longitude: this.state.location.lng
@@ -105,7 +113,7 @@ export default class ClueEditForm extends React.Component {
     cluesRef.child(this.props.clue.key).update(updatedClueFields);
 
     this.props.afterSubmit();
-  }
+  };
 
   handleDelete = e => {
     if (VIEW_ONLY_MODE) { return; }

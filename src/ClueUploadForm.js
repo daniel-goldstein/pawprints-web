@@ -1,9 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {cluesRef} from "./fire";
 import { VIEW_ONLY_MODE } from "./properties";
 
-import { Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
+import { ControlLabel, Button } from 'react-bootstrap';
 
 import LocationSearchBox from './LocationSearchBox';
 
@@ -22,11 +22,8 @@ export default class ClueUploadForm extends React.Component {
     this.state = initialState;
   }
 
-  handleChange = (event) => {
-    let name = event.target.name;
-    let value = event.target.value;
-
-    this.setState({ [name] : value });
+  handleChange = name => event => {
+    this.setState({ [name] : event.target.value });
   };
 
   render() {
@@ -36,43 +33,46 @@ export default class ClueUploadForm extends React.Component {
         <form onSubmit={this.handleSubmit}>
 
           <div className="side-by-side">
-            <FormGroup bsSize="large">
+            <Form.Group>
               <ControlLabel>Clue List ID</ControlLabel>
-              <FormControl
+              <Form.Control
                 type="text"
                 value={this.state.clueListId}
-                name="clueListId"
-                onChange={this.handleChange}
+                onChange={this.handleChange("clueListId")}
               />
-            </FormGroup>
-            <FormGroup bsSize="large">
+            </Form.Group>
+            <Form.Group>
               <ControlLabel>Clue #</ControlLabel>
-              <FormControl
+              <Form.Control
                 type="number"
                 value={this.state.clueNum}
-                name="clueNum"
-                onChange={this.handleChange}
+                onChange={this.handleChange("clueNum")}
               />
-            </FormGroup>
+            </Form.Group>
           </div>
 
-          <FormGroup bsSize="large">
+          <Form.Group>
             <ControlLabel>Title</ControlLabel>
-            <FormControl
+            <Form.Control
               type="text"
               value={this.state.title}
-              name="title"
-              onChange={this.handleChange}
+              onChange={this.handleChange("title")}
             />
-          </FormGroup>
+          </Form.Group>
+          <Form.Group>
+            <ControlLabel>Crawl?</ControlLabel>
+            <Form.Check
+              type="checkbox"
+              onChange={() => this.setState({inCrawl: !this.state.inCrawl})}
+            />
+          </Form.Group>
 
-
-          <FormGroup bsSize="large">
+          <Form.Group>
             <ControlLabel>Location</ControlLabel>
             <LocationSearchBox google={this.props.google}
                                onSelect={(loc) => this.setState({location: loc})}
-                               clearLocation={this.state.location == null}/>
-          </FormGroup>
+                               clearLocation={this.state.location === null}/>
+          </Form.Group>
 
           <Button bsStyle="primary" type="submit" value="submit" disabled={VIEW_ONLY_MODE}>
             Submit
@@ -101,6 +101,7 @@ export default class ClueUploadForm extends React.Component {
     let clue = {
       clueListId: clueListId,
       clueNum: clueNum,
+      inCrawl: this.state.inCrawl,
       title: title,
       latitude: location.lat,
       longitude: location.lng,

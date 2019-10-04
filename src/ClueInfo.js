@@ -12,6 +12,7 @@ export default class ClueInfo extends React.Component {
     return (
       <div>
         <h4>{clue.title} ({clue.clueListId}{clue.clueNum})</h4>
+        {clue.inCrawl ? <h5>Crawl stop</h5> : undefined}
         <h5>{status}</h5>
       </div>
     );
