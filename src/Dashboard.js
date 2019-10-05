@@ -71,7 +71,6 @@ class Dashboard extends Component {
 
   render() {
     return (
-      <div className="full-screen">
       <div className="dashboard-container" id="container">
 
         <div className="dashboard-left" id="clue-upload-form">
@@ -91,8 +90,10 @@ class Dashboard extends Component {
               onClose={this.removeFocus}
               marker={this.state.selectedClueMarker}
               visible={this.state.selectedClue !== null}>
-              { this.state.selectedClue && this.renderClueInfo() }
-              <Button onClick={this.toggleShowingClueEditWindow}>Edit</Button>
+              <div>
+                { this.state.selectedClue && this.renderClueInfo() }
+                <Button onClick={this.toggleShowingClueEditWindow}>Edit</Button>
+              </div>
             </ClueInfo>
             <InfoWindow
               onClose={this.removeFocus}
@@ -130,7 +131,6 @@ class Dashboard extends Component {
             <ClueEditForm google={this.props.google} clue={this.state.selectedClue} afterSubmit={this.removeFocus}/>
           </Modal.Header>
         </Modal>
-      </div>
       </div>
     );
   }

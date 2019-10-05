@@ -74,7 +74,7 @@ export default class ClueUploadForm extends React.Component {
                                clearLocation={this.state.location === null}/>
           </Form.Group>
 
-          <Button bsStyle="primary" type="submit" value="submit" disabled={VIEW_ONLY_MODE}>
+          <Button type="submit" value="submit" disabled={VIEW_ONLY_MODE}>
             Submit
           </Button>
           { VIEW_ONLY_MODE && <Form.Label>This application is in view-only mode</Form.Label>}

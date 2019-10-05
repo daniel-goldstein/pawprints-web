@@ -78,17 +78,17 @@ export default class ClueEditForm extends React.Component {
             />
           </Form.Group>
 
-          <FormGroup bsSize="large">
+          <FormGroup>
             <Form.Label>Location</Form.Label>
             <LocationSearchBox google={this.props.google}
                                onSelect={(loc) => this.setState({location: loc})}
                                clearLocation={this.state.location === null}/>
           </FormGroup>
           <div className="submit-delete-row">
-            <Button type="submit" disabled={VIEW_ONLY_MODE} bsStyle="primary">
+            <Button type="submit" disabled={VIEW_ONLY_MODE}>
               Submit
             </Button>
-            <Button onClick={this.handleDelete} disabled={VIEW_ONLY_MODE} bsStyle="danger">
+            <Button onClick={this.handleDelete} disabled={VIEW_ONLY_MODE}>
               Delete
             </Button>
           </div>
