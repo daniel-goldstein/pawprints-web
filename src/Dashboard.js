@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {GoogleApiWrapper, Map, Marker, InfoWindow} from 'google-maps-react';
-import { ToggleButtonGroup, ToggleButton, Modal, Button }
-from 'react-bootstrap';
+import { ToggleButtonGroup, ToggleButton, Modal, Button } from 'react-bootstrap';
 
 import './App.css';
 
@@ -103,9 +102,8 @@ class Dashboard extends Component {
             </InfoWindow>
           </Map>
           <div className="bottom-right-absolute">
-            <ToggleButtonGroup type="radio"
-                               name="clue-visibility-radio"
-                               onChange={(value) => this.setState({clueVisibility: value})}
+            <ToggleButtonGroup name="clue-visibility-radio"
+                               onChange={value => this.setState({clueVisibility: value})}
                                defaultValue={this.state.clueVisibility}>
 
               <ToggleButton value={CLUE_VISIBILITY.ALL}>

@@ -6,7 +6,6 @@ import Form from 'react-bootstrap/Form';
 
 import {
   FormGroup,
-  ControlLabel,
   FormControl,
   ToggleButtonGroup,
   ToggleButton,
@@ -40,7 +39,7 @@ export default class ClueEditForm extends React.Component {
       <div>
         <form onSubmit={this.handleSubmit}>
           <FormGroup>
-            <ControlLabel>Clue ID</ControlLabel>
+            <Form.Label>Clue ID</Form.Label>
             <FormControl
               type="text"
               value={this.state.clueId}
@@ -49,7 +48,7 @@ export default class ClueEditForm extends React.Component {
           </FormGroup>
 
           <FormGroup>
-            <ControlLabel>Title</ControlLabel>
+            <Form.Label>Title</Form.Label>
             <FormControl
               type="text"
               value={this.state.title}
@@ -59,7 +58,7 @@ export default class ClueEditForm extends React.Component {
 
 
           <FormGroup>
-            <ControlLabel>Status</ControlLabel>
+            <Form.Label>Status</Form.Label>
             <br /> {/* Don't know why this needs to be here */}
             <ToggleButtonGroup type="radio"
                                name="completedStatus"
@@ -71,7 +70,7 @@ export default class ClueEditForm extends React.Component {
             </ToggleButtonGroup>
           </FormGroup>
           <Form.Group>
-            <ControlLabel>Crawl?</ControlLabel>
+            <Form.Label>Crawl?</Form.Label>
             <Form.Check
               type="checkbox"
               checked={this.state.inCrawl}
@@ -80,7 +79,7 @@ export default class ClueEditForm extends React.Component {
           </Form.Group>
 
           <FormGroup bsSize="large">
-            <ControlLabel>Location</ControlLabel>
+            <Form.Label>Location</Form.Label>
             <LocationSearchBox google={this.props.google}
                                onSelect={(loc) => this.setState({location: loc})}
                                clearLocation={this.state.location === null}/>

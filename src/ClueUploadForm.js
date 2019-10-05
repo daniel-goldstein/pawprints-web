@@ -3,7 +3,7 @@ import {cluesRef} from "./fire";
 import { VIEW_ONLY_MODE } from "./properties";
 
 import Form from 'react-bootstrap/Form';
-import { ControlLabel, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 
 import LocationSearchBox from './LocationSearchBox';
 
@@ -34,7 +34,7 @@ export default class ClueUploadForm extends React.Component {
 
           <div className="side-by-side">
             <Form.Group>
-              <ControlLabel>Clue List ID</ControlLabel>
+              <Form.Label>Clue List ID</Form.Label>
               <Form.Control
                 type="text"
                 value={this.state.clueListId}
@@ -42,7 +42,7 @@ export default class ClueUploadForm extends React.Component {
               />
             </Form.Group>
             <Form.Group>
-              <ControlLabel>Clue #</ControlLabel>
+              <Form.Label>Clue #</Form.Label>
               <Form.Control
                 type="number"
                 value={this.state.clueNum}
@@ -52,7 +52,7 @@ export default class ClueUploadForm extends React.Component {
           </div>
 
           <Form.Group>
-            <ControlLabel>Title</ControlLabel>
+            <Form.Label>Title</Form.Label>
             <Form.Control
               type="text"
               value={this.state.title}
@@ -60,7 +60,7 @@ export default class ClueUploadForm extends React.Component {
             />
           </Form.Group>
           <Form.Group>
-            <ControlLabel>Crawl?</ControlLabel>
+            <Form.Label>Crawl?</Form.Label>
             <Form.Check
               type="checkbox"
               onChange={() => this.setState({inCrawl: !this.state.inCrawl})}
@@ -68,7 +68,7 @@ export default class ClueUploadForm extends React.Component {
           </Form.Group>
 
           <Form.Group>
-            <ControlLabel>Location</ControlLabel>
+            <Form.Label>Location</Form.Label>
             <LocationSearchBox google={this.props.google}
                                onSelect={(loc) => this.setState({location: loc})}
                                clearLocation={this.state.location === null}/>
@@ -77,7 +77,7 @@ export default class ClueUploadForm extends React.Component {
           <Button bsStyle="primary" type="submit" value="submit" disabled={VIEW_ONLY_MODE}>
             Submit
           </Button>
-          { VIEW_ONLY_MODE && <ControlLabel>This application is in view-only mode</ControlLabel>}
+          { VIEW_ONLY_MODE && <Form.Label>This application is in view-only mode</Form.Label>}
         </form>
       </div>
     );
