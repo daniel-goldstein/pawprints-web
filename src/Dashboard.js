@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {GoogleApiWrapper, Map, Marker, InfoWindow} from 'google-maps-react';
-import { ToggleButtonGroup, ToggleButton, Modal, Button } from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 
 import './App.css';
 
@@ -104,6 +106,7 @@ class Dashboard extends Component {
           </Map>
           <div className="bottom-right-absolute">
             <ToggleButtonGroup name="clue-visibility-radio"
+                               data-toggle="buttons"
                                onChange={value => this.setState({clueVisibility: value})}
                                defaultValue={this.state.clueVisibility}>
 
@@ -118,19 +121,18 @@ class Dashboard extends Component {
               </ToggleButton>
             </ToggleButtonGroup>
           </div>
+
+          {this.state.showingClueEditWindow && this.state.selectedClue ?
+            <ClueEditForm google={this.props.google}
+                          clue={this.state.selectedClue}
+                          afterSubmit={this.removeFocus}
+                          toggleShowingClueEditWindow={this.toggleShowingClueEditWindow}/>
+            : undefined }
         </div>
 
         <div className="dashboard-right">
           <ClueList clues={this.state.clues}/>
         </div>
-
-        <Modal show={this.state.showingClueEditWindow}
-               onHide={this.toggleShowingClueEditWindow}>
-          <Modal.Header closeButton>
-            <Modal.Title>Edit Clue</Modal.Title>
-            <ClueEditForm google={this.props.google} clue={this.state.selectedClue} afterSubmit={this.removeFocus}/>
-          </Modal.Header>
-        </Modal>
       </div>
     );
   }

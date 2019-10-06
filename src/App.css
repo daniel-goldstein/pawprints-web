@@ -32,12 +32,11 @@
 .dashboard-form {
   padding: 5%;
   width: 300px;
-  height: 700px;
+  height: 600px;
 }
 
 .side-by-side {
   display: flex;
-  justify-content: space-between;
 }
 
 .submit-delete-row {
