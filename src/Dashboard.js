@@ -76,7 +76,7 @@ class Dashboard extends Component {
       <div className="dashboard-container" id="container">
 
         <div className="dashboard-left" id="clue-upload-form">
-          <ClueUploadForm google={this.props.google}/>
+          <ClueUploadForm google={this.props.google} clues={this.state.clues}/>
         </div>
 
         <div className="dashboard-center" id="map">
@@ -131,7 +131,7 @@ class Dashboard extends Component {
         </div>
 
         <div className="dashboard-right">
-          <ClueList clues={this.state.clues}/>
+          <ClueList clues={this.visibleClues()}/>
         </div>
       </div>
     );
@@ -151,7 +151,7 @@ class Dashboard extends Component {
 
   // Render all the clue markers
   renderClues() {
-    const cluesToShow = this.filterClues(this.state.clueVisibility);
+    const cluesToShow = this.visibleClues();
 
     return cluesToShow.map((clue, index) => {
       const coords = { lat: clue.latitude, lng: clue.longitude };
@@ -167,10 +167,10 @@ class Dashboard extends Component {
     });
   }
 
-  filterClues(clueVisibility) {
+  visibleClues = () => {
     const allClues = this.state.clues;
 
-    switch (clueVisibility) {
+    switch (this.state.clueVisibility) {
       case CLUE_VISIBILITY.ALL:
         return allClues;
       case CLUE_VISIBILITY.COMPLETED:
@@ -178,9 +178,9 @@ class Dashboard extends Component {
       case CLUE_VISIBILITY.UNCOMPLETED:
         return allClues.filter(clue => !clue.completed);
       default:
-        alert(`Expected a valid clue visibility, got: ${clueVisibility}`);
+        alert(`Expected a valid clue visibility, got: ${this.state.clueVisibility}`);
     }
-  }
+  };
 
   renderHunters() {
     return this.state.hunters.map(hunter => {
@@ -207,7 +207,7 @@ class Dashboard extends Component {
     return (
       <div>
         <h4>{clue.title} ({clue.clueListId}{clue.clueNum})</h4>
-        {clue.inCrawl ? <h5>Crawl stop</h5> : undefined}
+        {clue.inCrawl ? <h5>Crawl</h5> : undefined}
         <h5>{status}</h5>
       </div>
     );

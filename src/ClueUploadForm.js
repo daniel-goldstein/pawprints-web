@@ -88,23 +88,17 @@ export default class ClueUploadForm extends React.Component {
 
     e.preventDefault();
 
-    let clueListId = this.state.clueListId;
-    let clueNum = this.state.clueNum;
-    let title = this.state.title;
-    let location = this.state.location;
-
-    if (!clueListId || !clueNum || !title || !location) {
-      alert("Please fill out all fields!");
+    if (!(this.fieldsNotEmpty() && this.validUniqueClueIds())) {
       return;
     }
 
     let clue = {
-      clueListId: clueListId,
-      clueNum: clueNum,
+      clueListId: this.state.clueListId.toUpperCase(),
+      clueNum: this.state.clueNum,
       inCrawl: this.state.inCrawl,
-      title: title,
-      latitude: location.lat,
-      longitude: location.lng,
+      title: this.state.title,
+      latitude: this.state.location.lat,
+      longitude: this.state.location.lng,
       completed: false
     };
     cluesRef.push(clue);
@@ -112,4 +106,47 @@ export default class ClueUploadForm extends React.Component {
     // Go back to initial form state
     this.setState(initialState);
   };
+
+  fieldsNotEmpty() {
+    let clueListId = this.state.clueListId;
+    let clueNum = this.state.clueNum;
+    let title = this.state.title;
+    let location = this.state.location;
+
+    if (!clueListId || !clueNum || !title || !location) {
+      alert("Please fill out all fields!");
+      return false;
+    }
+
+    return true;
+  }
+
+  validUniqueClueIds() {
+    let clueListId = this.state.clueListId;
+    let clueNum = this.state.clueNum;
+
+    if (clueListId.length !== 1) {
+      alert("Clue List ID must be a single letter!");
+      return false;
+    }
+
+    if (clueNum <= 0) {
+      alert("Clue Number must be a positive number");
+      return false;
+    }
+
+    if (this.clueIdAlreadyTaken(clueListId, clueNum)) {
+      alert("A clue with that list ID and # already exists!");
+      return false;
+    }
+
+    return true;
+  }
+
+  clueIdAlreadyTaken(clueListId, clueNum) {
+    return this.props.clues.some(clue =>
+      clue.clueListId.toUpperCase() === clueListId.toUpperCase() &&
+      clue.clueNum === clueNum
+    )
+  }
 }
