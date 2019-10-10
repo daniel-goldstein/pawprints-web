@@ -6,7 +6,12 @@ export default class ClueList extends React.Component {
   render() {
     return (
       <ListGroup>
-        {this.props.clues.map((clue, idx) => <ListGroup.Item key={idx}>{this.clueString(clue)}</ListGroup.Item>)}
+        {this.props.clues.map((clue, idx) =>
+          <ListGroup.Item key={idx}
+                          onClick={this.props.onClickClue(idx)}>
+            {this.clueString(clue)}
+          </ListGroup.Item>
+        )}
       </ListGroup>
     );
   }
