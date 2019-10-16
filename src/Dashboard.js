@@ -35,7 +35,7 @@ class Dashboard extends Component {
       clues: [],
       hunters: [],
       selectedClueIdx: null,
-      markerObjects: [],
+      selectedClueMarker: null,
       selectedHunter: null,
       selectedHunterMarker: null,
       showingClueEditWindow: false,
@@ -71,14 +71,7 @@ class Dashboard extends Component {
     });
   }
 
-  onMarkerMounted = element => {
-    this.setState(prevState => ({
-      markerObjects: [...prevState.markerObjects, element.marker]
-    }))
-  };
-
   render() {
-    let selectedClueMarker = this.state.selectedClueIdx ? this.state.markerObjects[this.state.selectedClueIdx] : null;
     return (
       <div className="dashboard-container" id="container">
 
@@ -97,7 +90,7 @@ class Dashboard extends Component {
 
             <ClueInfo
               onClose={this.removeFocus}
-              marker={selectedClueMarker}
+              marker={this.state.selectedClueMarker}
               visible={this.state.selectedClueIdx !== null}>
               <div>
                 { this.state.selectedClueIdx !== null && this.renderClueInfo() }
@@ -168,7 +161,7 @@ class Dashboard extends Component {
           key={index}
           position={coords}
           title={clue.title}
-          onClick={(_, marker) => this.selectClue(index)}
+          onClick={(_, marker) => this.selectClue(index, marker)}
         />
       );
     });
@@ -221,9 +214,10 @@ class Dashboard extends Component {
   }
 
   // Select the given clue/marker to populate the info window
-  selectClue = (clueIdx) => {
+  selectClue = (clueIdx, marker) => {
     this.setState({
-      selectedClueIdx: clueIdx
+      selectedClueIdx: clueIdx,
+      selectedClueMarker: marker
     });
   };
 
