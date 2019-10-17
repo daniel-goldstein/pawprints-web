@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {GoogleApiWrapper, Map, Marker, InfoWindow} from 'google-maps-react';
-import { ToggleButtonGroup, ToggleButton, Modal, Button }
-from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 
 import './App.css';
 
@@ -10,6 +11,7 @@ import { GOOGLE_MAPS_API_KEY } from "./properties";
 import ClueInfo from './ClueInfo';
 import ClueUploadForm from './ClueUploadForm';
 import ClueEditForm from "./ClueEditForm";
+import ClueList from "./ClueList";
 
 import demonHusky from './husky.png';
 
@@ -74,7 +76,7 @@ class Dashboard extends Component {
       <div className="dashboard-container" id="container">
 
         <div className="dashboard-left" id="clue-upload-form">
-          <ClueUploadForm google={this.props.google}/>
+          <ClueUploadForm google={this.props.google} clues={this.state.clues}/>
         </div>
 
         <div className="dashboard-center" id="map">
@@ -90,8 +92,10 @@ class Dashboard extends Component {
               onClose={this.removeFocus}
               marker={this.state.selectedClueMarker}
               visible={this.state.selectedClue !== null}>
-              { this.state.selectedClue && this.renderClueInfo() }
-              <Button onClick={this.toggleShowingClueEditWindow}>Edit</Button>
+              <div>
+                { this.state.selectedClue !== null && this.renderClueInfo() }
+                <Button onClick={this.toggleShowingClueEditWindow}>Edit</Button>
+              </div>
             </ClueInfo>
             <InfoWindow
               onClose={this.removeFocus}
@@ -100,42 +104,43 @@ class Dashboard extends Component {
               <h4>{this.state.selectedHunter ? this.state.selectedHunter.name : undefined}</h4>
             </InfoWindow>
           </Map>
+          <div className="bottom-right-absolute">
+            <ToggleButtonGroup name="clue-visibility-radio"
+                               data-toggle="buttons"
+                               onChange={value => this.setState({clueVisibility: value})}
+                               defaultValue={this.state.clueVisibility}>
+
+              <ToggleButton value={CLUE_VISIBILITY.ALL}>
+                {CLUE_VISIBILITY.ALL}
+              </ToggleButton>
+              <ToggleButton value={CLUE_VISIBILITY.COMPLETED}>
+                {CLUE_VISIBILITY.COMPLETED}
+              </ToggleButton>
+              <ToggleButton value={CLUE_VISIBILITY.UNCOMPLETED}>
+                {CLUE_VISIBILITY.UNCOMPLETED}
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </div>
+
+          {this.state.showingClueEditWindow && this.state.selectedClue !== null ?
+            <ClueEditForm google={this.props.google}
+                          clue={this.state.selectedClue}
+                          afterSubmit={this.removeFocus}
+                          toggleShowingClueEditWindow={this.toggleShowingClueEditWindow}/>
+            : undefined }
         </div>
 
-        <div className="bottom-right-absolute">
-          <ToggleButtonGroup type="radio"
-                             name="clue-visibility-radio"
-                             onChange={(value) => this.setState({clueVisibility: value})}
-                             defaultValue={this.state.clueVisibility}>
-
-            <ToggleButton value={CLUE_VISIBILITY.ALL}>
-              {CLUE_VISIBILITY.ALL}
-            </ToggleButton>
-            <ToggleButton value={CLUE_VISIBILITY.COMPLETED}>
-              {CLUE_VISIBILITY.COMPLETED}
-            </ToggleButton>
-            <ToggleButton value={CLUE_VISIBILITY.UNCOMPLETED}>
-              {CLUE_VISIBILITY.UNCOMPLETED}
-            </ToggleButton>
-          </ToggleButtonGroup>
+        <div className="dashboard-right">
+          <ClueList clues={this.visibleClues()} />
         </div>
-
-        <Modal show={this.state.showingClueEditWindow}
-               onHide={this.toggleShowingClueEditWindow}>
-          <Modal.Header closeButton>
-            <Modal.Title>Edit Clue</Modal.Title>
-            <ClueEditForm google={this.props.google} clue={this.state.selectedClue} afterSubmit={this.removeFocus}/>
-          </Modal.Header>
-        </Modal>
       </div>
     );
   }
 
   removeFocus = () => {
-    if (this.state.selectedClue || this.state.selectedHunter) {
+    if (this.state.selectedClue !== null || this.state.selectedHunter) {
       this.setState({
         selectedClue: null,
-        selectedClueMarker: null,
         selectedHunter: null,
         selectedHunterMarker: null,
         showingClueEditWindow: false
@@ -145,7 +150,7 @@ class Dashboard extends Component {
 
   // Render all the clue markers
   renderClues() {
-    const cluesToShow = this.filterClues(this.state.clueVisibility);
+    const cluesToShow = this.visibleClues();
 
     return cluesToShow.map((clue, index) => {
       const coords = { lat: clue.latitude, lng: clue.longitude };
@@ -161,10 +166,10 @@ class Dashboard extends Component {
     });
   }
 
-  filterClues(clueVisibility) {
+  visibleClues = () => {
     const allClues = this.state.clues;
 
-    switch (clueVisibility) {
+    switch (this.state.clueVisibility) {
       case CLUE_VISIBILITY.ALL:
         return allClues;
       case CLUE_VISIBILITY.COMPLETED:
@@ -172,9 +177,9 @@ class Dashboard extends Component {
       case CLUE_VISIBILITY.UNCOMPLETED:
         return allClues.filter(clue => !clue.completed);
       default:
-        alert(`Expected a valid clue visibility, got: ${clueVisibility}`);
+        alert(`Expected a valid clue visibility, got: ${this.state.clueVisibility}`);
     }
-  }
+  };
 
   renderHunters() {
     return this.state.hunters.map(hunter => {
@@ -201,7 +206,7 @@ class Dashboard extends Component {
     return (
       <div>
         <h4>{clue.title} ({clue.clueListId}{clue.clueNum})</h4>
-        {clue.inCrawl ? <h5>Crawl stop</h5> : undefined}
+        {clue.inCrawl ? <h5>Crawl</h5> : undefined}
         <h5>{status}</h5>
       </div>
     );

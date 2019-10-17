@@ -1,37 +1,20 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
 .dashboard-container {
   display: flex;
   justify-content: flex-start;
   align-items: stretch;
+  height: 100%;
 }
 
 .dashboard-left {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+}
+
+.dashboard-center {
+  width: 100%;
+  position: relative;
+}
+
+.dashboard-right {
+  width: 300px;
 }
 
 .bottom-right-absolute {
@@ -49,11 +32,11 @@
 .dashboard-form {
   padding: 5%;
   width: 300px;
+  height: 600px;
 }
 
 .side-by-side {
   display: flex;
-  justify-content: space-between;
 }
 
 .submit-delete-row {

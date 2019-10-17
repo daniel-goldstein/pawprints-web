@@ -3,13 +3,11 @@ import React from 'react';
 import { cluesRef } from "./fire";
 
 import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 
 import {
-  FormGroup,
-  ControlLabel,
-  FormControl,
-  ToggleButtonGroup,
-  ToggleButton,
   Button
 }
 from 'react-bootstrap';
@@ -23,7 +21,8 @@ export default class ClueEditForm extends React.Component {
     super(props);
 
     this.state = {
-      clueId: this.props.clue.clueId,
+      clueListId: this.props.clue.clueListId,
+      clueNum: this.props.clue.clueNum,
       title: this.props.clue.title,
       inCrawl: this.props.clue.inCrawl,
       completedStatus: this.props.clue.completed,
@@ -37,64 +36,86 @@ export default class ClueEditForm extends React.Component {
 
   render() {
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <FormGroup>
-            <ControlLabel>Clue ID</ControlLabel>
-            <FormControl
-              type="text"
-              value={this.state.clueId}
-              onChange={this.handleChange("clueId")}
-            />
-          </FormGroup>
+      <Modal show={true}
+             onHide={this.props.toggleShowingClueEditWindow}
+             style={{opacity: 1, paddingTop: '150px'}}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Clue</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
 
-          <FormGroup>
-            <ControlLabel>Title</ControlLabel>
-            <FormControl
-              type="text"
-              value={this.state.title}
-              onChange={this.handleChange("title")}
-            />
-          </FormGroup>
+            <div className="side-by-side">
+              <Form.Group>
+                <Form.Label>Clue List ID</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={this.state.clueListId}
+                  onChange={this.handleChange("clueListId")}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Clue #</Form.Label>
+                <Form.Control
+                  type="number"
+                  value={this.state.clueNum}
+                  onChange={this.handleChange("clueNum")}
+                />
+              </Form.Group>
+            </div>
+
+              <Form.Group>
+                <Form.Label>Title</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={this.state.title}
+                  onChange={this.handleChange("title")}
+                />
+              </Form.Group>
 
 
-          <FormGroup>
-            <ControlLabel>Status</ControlLabel>
-            <br /> {/* Don't know why this needs to be here */}
-            <ToggleButtonGroup type="radio"
-                               name="completedStatus"
-                               onChange={(value) => this.setState({completedStatus: value})}
-                               defaultValue={this.state.completedStatus}>
+              <Form.Group>
+                <Form.Label>Status</Form.Label>
+                <br /> {/* Don't know why this needs to be here */}
 
-              <ToggleButton value={true}>Completed</ToggleButton>
-              <ToggleButton value={false}>Uncompleted</ToggleButton>
-            </ToggleButtonGroup>
-          </FormGroup>
-          <Form.Group>
-            <ControlLabel>Crawl?</ControlLabel>
-            <Form.Check
-              type="checkbox"
-              checked={this.state.inCrawl}
-              onChange={() => this.setState({inCrawl: !this.state.inCrawl})}
-            />
-          </Form.Group>
+                <ToggleButtonGroup type="radio"
+                                   name="completedStatus"
+                                   data-toggle="buttons"
+                                   onChange={(value) => this.setState({completedStatus: value})}
+                                   defaultValue={this.state.completedStatus}>
 
-          <FormGroup bsSize="large">
-            <ControlLabel>Location</ControlLabel>
-            <LocationSearchBox google={this.props.google}
-                               onSelect={(loc) => this.setState({location: loc})}
-                               clearLocation={this.state.location === null}/>
-          </FormGroup>
+                  <ToggleButton value={true}>Completed</ToggleButton>
+                  <ToggleButton value={false}>Uncompleted</ToggleButton>
+                </ToggleButtonGroup>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Crawl?</Form.Label>
+                <Form.Check
+                  type="checkbox"
+                  checked={this.state.inCrawl}
+                  onChange={() => this.setState({inCrawl: !this.state.inCrawl})}
+                />
+              </Form.Group>
+
+              <Form.Group>
+                <Form.Label>Location</Form.Label>
+                <LocationSearchBox google={this.props.google}
+                                   onSelect={(loc) => this.setState({location: loc})}
+                                   clearLocation={this.state.location === null}/>
+              </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
           <div className="submit-delete-row">
-            <Button type="submit" disabled={VIEW_ONLY_MODE} bsStyle="primary">
-              Submit
-            </Button>
-            <Button onClick={this.handleDelete} disabled={VIEW_ONLY_MODE} bsStyle="danger">
+            <Button onClick={this.handleDelete} disabled={VIEW_ONLY_MODE} variant="danger">
               Delete
             </Button>
+            <Button onClick={this.handleSubmit} disabled={VIEW_ONLY_MODE}>
+              Submit
+            </Button>
           </div>
-        </form>
-      </div>
+        </Modal.Footer>
+      </Modal>
     );
   }
 
@@ -103,7 +124,7 @@ export default class ClueEditForm extends React.Component {
     e.preventDefault();
 
     let updatedClueFields = {
-      clueId: this.state.clueId,
+      clueListId: this.state.clueListId,
       title: this.state.title,
       inCrawl: this.state.inCrawl,
       completed: this.state.completedStatus,
