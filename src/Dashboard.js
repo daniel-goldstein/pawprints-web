@@ -34,7 +34,7 @@ class Dashboard extends Component {
     this.state = {
       clues: [],
       hunters: [],
-      selectedClueIdx: null,
+      selectedClue: null,
       selectedClueMarker: null,
       selectedHunter: null,
       selectedHunterMarker: null,
@@ -91,9 +91,9 @@ class Dashboard extends Component {
             <ClueInfo
               onClose={this.removeFocus}
               marker={this.state.selectedClueMarker}
-              visible={this.state.selectedClueIdx !== null}>
+              visible={this.state.selectedClue !== null}>
               <div>
-                { this.state.selectedClueIdx !== null && this.renderClueInfo() }
+                { this.state.selectedClue !== null && this.renderClueInfo() }
                 <Button onClick={this.toggleShowingClueEditWindow}>Edit</Button>
               </div>
             </ClueInfo>
@@ -122,9 +122,9 @@ class Dashboard extends Component {
             </ToggleButtonGroup>
           </div>
 
-          {this.state.showingClueEditWindow && this.state.selectedClueIdx !== null ?
+          {this.state.showingClueEditWindow && this.state.selectedClue !== null ?
             <ClueEditForm google={this.props.google}
-                          clue={this.state.clues[this.state.selectedClueIdx]}
+                          clue={this.state.selectedClue}
                           afterSubmit={this.removeFocus}
                           toggleShowingClueEditWindow={this.toggleShowingClueEditWindow}/>
             : undefined }
@@ -138,9 +138,9 @@ class Dashboard extends Component {
   }
 
   removeFocus = () => {
-    if (this.state.selectedClueIdx !== null || this.state.selectedHunter) {
+    if (this.state.selectedClue !== null || this.state.selectedHunter) {
       this.setState({
-        selectedClueIdx: null,
+        selectedClue: null,
         selectedHunter: null,
         selectedHunterMarker: null,
         showingClueEditWindow: false
@@ -157,11 +157,10 @@ class Dashboard extends Component {
 
       return (
         <Marker
-          ref={this.onMarkerMounted}
           key={index}
           position={coords}
           title={clue.title}
-          onClick={(_, marker) => this.selectClue(index, marker)}
+          onClick={(_, marker) => this.selectClue(clue, marker)}
         />
       );
     });
@@ -202,7 +201,7 @@ class Dashboard extends Component {
   }
 
   renderClueInfo() {
-    let clue = this.state.clues[this.state.selectedClueIdx];
+    let clue = this.state.selectedClue;
     let status = clue.completed ? "Complete" : "Not Completed";
     return (
       <div>
@@ -214,9 +213,9 @@ class Dashboard extends Component {
   }
 
   // Select the given clue/marker to populate the info window
-  selectClue = (clueIdx, marker) => {
+  selectClue = (clue, marker) => {
     this.setState({
-      selectedClueIdx: clueIdx,
+      selectedClue: clue,
       selectedClueMarker: marker
     });
   };
