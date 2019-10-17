@@ -14,7 +14,13 @@
 }
 
 .dashboard-right {
-  width: 300px;
+  width: 350px;
+}
+
+.list-group {
+  max-height: 500px;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 
 .bottom-right-absolute {
@@ -60,7 +66,7 @@ input[type=submit] {
   cursor: pointer;
 }
 
-// Supposed to 
+// Supposed to
 // put the google places autocomplete dropdown results above the bootstrap modal 1050 zindex.
 div.pac-container {
     z-index: 99999999999 !important;
