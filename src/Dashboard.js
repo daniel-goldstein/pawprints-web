@@ -131,7 +131,7 @@ class Dashboard extends Component {
         </div>
 
         <div className="dashboard-right">
-          <ClueList clues={this.visibleClues()} onClickClue={this.onClickListClue}/>
+          <ClueList clues={this.visibleClues()} />
         </div>
       </div>
     );
@@ -231,10 +231,6 @@ class Dashboard extends Component {
     let prevValue = this.state.showingClueEditWindow;
     this.setState({showingClueEditWindow: !prevValue});
   };
-
-  onClickListClue = idx => () => {
-    this.selectClue(idx)
-  }
 }
 
 export default GoogleApiWrapper({
