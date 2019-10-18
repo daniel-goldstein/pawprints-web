@@ -7,6 +7,8 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 
+import Form from 'react-bootstrap/Form';
+
 import './App.css';
 
 import { cluesRef, huntersRef } from "./fire";
@@ -112,11 +114,10 @@ class Dashboard extends Component {
             </InfoWindow>
           </Map>
           <div className="bottom-left-absolute">
-            <DropdownButton drop="down" title={this.state.visibleClueList}
-                            onChange={val => this.setState({visibleClueList: val})}>
-              <Dropdown.Item key="all" value={DISPLAY_ALL_LISTS}>{DISPLAY_ALL_LISTS}</Dropdown.Item>
-              {this.availableClueLists().map( listId => <Dropdown.Item key={listId} value={listId}>{listId}</Dropdown.Item> )}
-            </DropdownButton>
+            <Form.Control as="select" onChange={(e) => this.setState({visibleClueList: e.target.value})}>
+              <option value={DISPLAY_ALL_LISTS}>{DISPLAY_ALL_LISTS}</option>
+              {this.availableClueLists().map( listId => <option value={listId}>{listId}</option> )}
+            </Form.Control>
             <ToggleButtonGroup type="checkbox"
                                data-toggle="buttons"
                                onChange={() => this.setState({showingOnlyCrawls: !this.state.showingOnlyCrawls}) }>
@@ -187,6 +188,10 @@ class Dashboard extends Component {
 
   visibleClues = () => {
     let allClues = this.state.clues;
+
+    if (this.state.visibleClueList !== DISPLAY_ALL_LISTS) {
+      allClues = allClues.filter(clue => clue.clueListId === this.state.visibleClueList);
+    }
 
     if (this.state.showingOnlyCrawls) {
       allClues = allClues.filter(clue => clue.inCrawl);
