@@ -21,6 +21,12 @@
   margin-bottom: 0;
 }
 
+.bottom-left-absolute {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
 .bottom-right-absolute {
   position: absolute;
   bottom: 10px;

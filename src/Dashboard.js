@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import {GoogleApiWrapper, Map, Marker, InfoWindow} from 'google-maps-react';
 import Button from 'react-bootstrap/Button';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 
@@ -26,6 +29,8 @@ const CLUE_VISIBILITY = {
   UNCOMPLETED: "Uncompleted"
 };
 
+const DISPLAY_ALL_LISTS = "All Lists";
+
 class Dashboard extends Component {
 
   constructor(props) {
@@ -39,7 +44,9 @@ class Dashboard extends Component {
       selectedHunter: null,
       selectedHunterMarker: null,
       showingClueEditWindow: false,
-      clueVisibility: CLUE_VISIBILITY.ALL
+      clueVisibility: CLUE_VISIBILITY.ALL,
+      showingOnlyCrawls: false,
+      visibleClueList: DISPLAY_ALL_LISTS
     }
   }
 
@@ -104,6 +111,18 @@ class Dashboard extends Component {
               <h4>{this.state.selectedHunter ? this.state.selectedHunter.name : undefined}</h4>
             </InfoWindow>
           </Map>
+          <div className="bottom-left-absolute">
+            <DropdownButton drop="down" title={this.state.visibleClueList}
+                            onChange={val => this.setState({visibleClueList: val})}>
+              <Dropdown.Item key="all" value={DISPLAY_ALL_LISTS}>{DISPLAY_ALL_LISTS}</Dropdown.Item>
+              {this.availableClueLists().map( listId => <Dropdown.Item key={listId} value={listId}>{listId}</Dropdown.Item> )}
+            </DropdownButton>
+            <ToggleButtonGroup type="checkbox"
+                               data-toggle="buttons"
+                               onChange={() => this.setState({showingOnlyCrawls: !this.state.showingOnlyCrawls}) }>
+              <ToggleButton>Only Crawls</ToggleButton>
+            </ToggleButtonGroup>
+          </div>
           <div className="bottom-right-absolute">
             <ToggleButtonGroup name="clue-visibility-radio"
                                data-toggle="buttons"
@@ -167,7 +186,11 @@ class Dashboard extends Component {
   }
 
   visibleClues = () => {
-    const allClues = this.state.clues;
+    let allClues = this.state.clues;
+
+    if (this.state.showingOnlyCrawls) {
+      allClues = allClues.filter(clue => clue.inCrawl);
+    }
 
     switch (this.state.clueVisibility) {
       case CLUE_VISIBILITY.ALL:
@@ -231,6 +254,10 @@ class Dashboard extends Component {
     let prevValue = this.state.showingClueEditWindow;
     this.setState({showingClueEditWindow: !prevValue});
   };
+
+  availableClueLists = () => {
+    return Array.from(new Set(this.state.clues.map(clue => clue.clueListId))).sort()
+  }
 }
 
 export default GoogleApiWrapper({
