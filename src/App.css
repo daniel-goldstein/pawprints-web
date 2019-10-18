@@ -2,10 +2,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: stretch;
-  height: 100%;
-}
-
-.dashboard-left {
+  height: 100vh;
 }
 
 .dashboard-center {
@@ -18,9 +15,10 @@
 }
 
 .list-group {
-  max-height: 500px;
+  max-height: calc(100vh - 34px);
   overflow: scroll;
   -webkit-overflow-scrolling: touch;
+  margin-bottom: 0;
 }
 
 .bottom-right-absolute {
@@ -50,7 +48,8 @@
   justify-content: space-between;
 }
 
-input[type=text], input[type=number] {
+input[type=text],
+input[type=number] {
   width: 100%;
   margin: 8px 0;
   box-sizing: border-box;
@@ -69,7 +68,7 @@ input[type=submit] {
 // Supposed to
 // put the google places autocomplete dropdown results above the bootstrap modal 1050 zindex.
 div.pac-container {
-    z-index: 99999999999 !important;
+  z-index: 99999999999 !important;
 }
 
 .modal {
