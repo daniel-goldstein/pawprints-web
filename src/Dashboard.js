@@ -62,7 +62,8 @@ class Dashboard extends Component {
         clues.push({ ...item.val(), key: item.key });
       });
 
-      this.setState({ clues })
+      // Most recently added at the top of the list
+      this.setState({ clues: clues.reverse() })
     });
   }
 
@@ -78,6 +79,7 @@ class Dashboard extends Component {
   }
 
   render() {
+    const cluesToDisplay = this.visibleClues();
     return (
       <div className="dashboard-container" id="container">
 
@@ -91,7 +93,7 @@ class Dashboard extends Component {
                onClick={this.removeFocus}
                initialCenter={BOSTON}>
 
-            {this.renderClues()}
+            {this.renderClues(cluesToDisplay)}
             {this.renderHunters()}
 
             <ClueInfo
@@ -148,7 +150,7 @@ class Dashboard extends Component {
         </div>
 
         <div className="dashboard-right">
-          <ClueList clues={this.visibleClues()} />
+          <ClueList clues={cluesToDisplay} />
         </div>
       </div>
     );
@@ -166,9 +168,7 @@ class Dashboard extends Component {
   };
 
   // Render all the clue markers
-  renderClues() {
-    const cluesToShow = this.visibleClues();
-
+  renderClues(cluesToShow) {
     return cluesToShow.map((clue, index) => {
       const coords = { lat: clue.latitude, lng: clue.longitude };
 
@@ -184,23 +184,23 @@ class Dashboard extends Component {
   }
 
   visibleClues = () => {
-    let allClues = this.state.clues;
+    let cluesToDisplay = this.state.clues;
 
     if (this.state.visibleClueList !== DISPLAY_ALL_LISTS) {
-      allClues = allClues.filter(clue => clue.clueListId === this.state.visibleClueList);
+      cluesToDisplay = cluesToDisplay.filter(clue => clue.clueListId === this.state.visibleClueList);
     }
 
     if (this.state.showingOnlyCrawls) {
-      allClues = allClues.filter(clue => clue.inCrawl);
+      cluesToDisplay = cluesToDisplay.filter(clue => clue.inCrawl);
     }
 
     switch (this.state.clueVisibility) {
       case CLUE_VISIBILITY.ALL:
-        return allClues;
+        return cluesToDisplay;
       case CLUE_VISIBILITY.COMPLETED:
-        return allClues.filter(clue => clue.completed);
+        return cluesToDisplay.filter(clue => clue.completed);
       case CLUE_VISIBILITY.UNCOMPLETED:
-        return allClues.filter(clue => !clue.completed);
+        return cluesToDisplay.filter(clue => !clue.completed);
       default:
         alert(`Expected a valid clue visibility, got: ${this.state.clueVisibility}`);
     }
