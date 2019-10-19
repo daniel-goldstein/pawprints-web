@@ -140,7 +140,9 @@ export default class ClueEditForm extends React.Component {
     if (VIEW_ONLY_MODE) { return; }
     e.preventDefault();
 
-    cluesRef.child(this.props.clue.key).remove();
-    this.props.afterSubmit();
+    if (window.confirm("Are you sure you want to delete this clue?")) {
+      cluesRef.child(this.props.clue.key).remove();
+      this.props.afterSubmit();
+    }
   }
 }
