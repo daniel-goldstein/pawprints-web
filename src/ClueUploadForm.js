@@ -63,7 +63,8 @@ export default class ClueUploadForm extends React.Component {
             <Form.Label>Crawl?</Form.Label>
             <Form.Check
               type="checkbox"
-              onChange={() => this.setState({inCrawl: !this.state.inCrawl})}
+              checked={this.state.inCrawl}
+              onChange={(e) => this.setState({inCrawl: e.target.checked})}
             />
           </Form.Group>
 
