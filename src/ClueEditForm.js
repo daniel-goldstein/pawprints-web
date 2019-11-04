@@ -125,6 +125,7 @@ export default class ClueEditForm extends React.Component {
 
     let updatedClueFields = {
       clueListId: this.state.clueListId,
+      clueNum: this.state.clueNum,
       title: this.state.title,
       inCrawl: this.state.inCrawl,
       completed: this.state.completedStatus,
